@@ -61,17 +61,27 @@ docs/
   Plano_Implementacao_ODSDR.md
   Plano_Fase_1_ODSDR.md
   Plano_Fase_2_ODSDR.md
+  Plano_Fase_3_ODSDR.md
+  Plano_Fase_4_ODSDR.md
+  Catalogo_Consultas_Fase_4.md
+  Relatorio_Fase_3_SHACL.md
   Roadmap_Implementacao_ODSDR.md
 ontology/
   odsdr.ttl
 data/
   casos_iniciais.ttl
+  validation/
+    positivo_shacl.ttl
+    negativo_shacl.ttl
+shacl/
+  odsdr_shapes.ttl
 queries/
   01_pacientes_com_perfil_pneumonia.rq
   02_diagnosticos_e_tratamentos.rq
   03_doencas_por_fator_risco.rq
 scripts/
   load_and_query.py
+  validate_shacl.py
 requirements.txt
 .venv/
 .local/
@@ -86,10 +96,13 @@ requirements.txt
   - classe inferivel inicial (`CasoProvavelPneumonia`).
 - Concluido: consolidacao semantica da Fase 1 (nomenclatura, labels/comments, dominios/ranges e disjuncoes).
 - Concluido: inferencia clinica da Fase 2 com quatro classes de caso provavel validadas no reasoner.
+- Concluido: qualidade de dados da Fase 3 com perfis SHACL, datasets positivo/negativo e relatorio versionado.
+- Concluido: cobertura funcional da Fase 4 com catalogo de perguntas de competencia e 10 queries SPARQL.
 - Concluido: dados de exemplo em `data/casos_iniciais.ttl`.
 - Concluido: consultas SPARQL em `queries/*.rq`.
 - Concluido: script de carga/consulta em `scripts/load_and_query.py`.
-- Concluido: ambiente Python com virtualenv local (`.venv`) e dependencias `rdflib` e `owlready2` em `requirements.txt`.
+- Concluido: padronizacao do script de consultas com saida `table` e `json`.
+- Concluido: ambiente Python com virtualenv local (`.venv`) e dependencias `rdflib`, `owlready2` e `pyshacl` em `requirements.txt`.
 - Concluido: Java local em `.local/java25` para execucao do reasoner sem dependencia de Java global.
 
 ## Execucao local
@@ -108,21 +121,31 @@ python3 -m venv .venv
 .venv/bin/python scripts/load_and_query.py
 ```
 
-4. Alternativa ativando o ambiente:
+4. Executar validacao SHACL:
+```bash
+.venv/bin/python scripts/validate_shacl.py
+```
+
+5. Alternativa ativando o ambiente:
 ```bash
 source .venv/bin/activate
 python scripts/load_and_query.py
 ```
 
-## Resultado de validacao inicial
+## Resultado de validacao atual
 - A carga da ontologia e dos dados executou com sucesso.
-- As 3 consultas SPARQL retornaram resultados esperados:
-  - perfil de pneumonia;
-  - diagnosticos e tratamentos por paciente;
-  - doencas relacionadas a fatores de risco.
+- As 10 consultas SPARQL da Fase 4 executaram com resultados esperados (catalogadas em `docs/Catalogo_Consultas_Fase_4.md`).
 - A validacao de reasoner (Pellet via Owlready2) executou com sucesso:
   - sem incoerencias detectadas na execucao;
-  - inferencia de `PacienteJoao` como `CasoProvavelPneumonia`.
+  - inferencias validadas:
+    - `PacienteJoao` -> `CasoProvavelPneumonia`
+    - `PacienteMaria` -> `CasoProvavelAsma`
+    - `PacienteLuiza` -> `CasoProvavelBronquite`
+    - `PacienteCarlos` -> `CasoProvavelCOVID19`
+- A validacao SHACL (Fase 3) executou com sucesso:
+  - dataset positivo conforme (`conforms=True`, `violations=0`);
+  - dataset negativo com violacoes esperadas (`conforms=False`, `violations=5`);
+  - relatorio salvo em `docs/Relatorio_Fase_3_SHACL.md`.
 
 ## Criterios de aceite
 1. Ontologia consistente no reasoner OWL.

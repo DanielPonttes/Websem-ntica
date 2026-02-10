@@ -1,0 +1,20 @@
+@prefix odsdr: <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-validation-positive/1.0> a owl:Ontology ;
+    owl:imports <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/> .
+
+odsdr:PacienteValidoShacl a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 34 ;
+    odsdr:sexo "F" ;
+    odsdr:fumante false ;
+    odsdr:apresenta odsdr:Tosse, odsdr:Febre ;
+    odsdr:realiza odsdr:PCR ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoValidoShacl .
+
+odsdr:DiagnosticoValidoShacl a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-10"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:PCR ;
+    odsdr:diagnosticaDoenca odsdr:COVID19 ;
+    odsdr:geraTratamento odsdr:Hidratacao .

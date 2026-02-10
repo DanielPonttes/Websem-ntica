@@ -103,6 +103,7 @@ Fluxo geral:
 - RDFLib
 - SPARQL
 - Owlready2
+- SHACL / pySHACL
 - LangChain (futuro)
 - LLMs (futuro)
 
@@ -136,13 +137,20 @@ Implementação inicial concluída com os seguintes artefatos:
 - Base de casos iniciais (ABox): `data/casos_iniciais.ttl`
 - Consultas SPARQL: `queries/01_pacientes_com_perfil_pneumonia.rq`, `queries/02_diagnosticos_e_tratamentos.rq`, `queries/03_doencas_por_fator_risco.rq`
 - Script de execução: `scripts/load_and_query.py`
+- Script de validação SHACL: `scripts/validate_shacl.py`
 - Dependências Python: `requirements.txt`
 - Ambiente virtual local: `.venv/`
 - Runtime Java local para reasoner: `.local/java25/`
+- Shapes SHACL: `shacl/odsdr_shapes.ttl`
+- Datasets de validação SHACL: `data/validation/positivo_shacl.ttl`, `data/validation/negativo_shacl.ttl`
+- Relatório SHACL: `docs/Relatorio_Fase_3_SHACL.md`
+- Catálogo de consultas da Fase 4: `docs/Catalogo_Consultas_Fase_4.md`
 
 O arquivo legado `Doencas-respiratorias.rdf` permanece disponível para interoperabilidade, mas o desenvolvimento ativo está centralizado em Turtle.
 A Fase 1 (consolidação semântica) foi concluída e registrada em `docs/Plano_Fase_1_ODSDR.md`.
 A Fase 2 (inferência clínica) foi concluída e registrada em `docs/Plano_Fase_2_ODSDR.md`.
+A Fase 3 (qualidade de dados com SHACL) foi concluída e registrada em `docs/Plano_Fase_3_ODSDR.md`.
+A Fase 4 (consultas e cobertura funcional) foi concluída e registrada em `docs/Plano_Fase_4_ODSDR.md`.
 
 ---
 
@@ -169,6 +177,17 @@ export PATH="$JAVA_HOME/bin:$PATH"
 java -version
 ```
 
+5. Executar validação SHACL (qualidade de dados):
+```bash
+.venv/bin/python scripts/validate_shacl.py
+```
+
+6. Executar consultas com saída padronizada:
+```bash
+.venv/bin/python scripts/load_and_query.py --format table
+.venv/bin/python scripts/load_and_query.py --format json
+```
+
 ---
 
 ## 15. Validação Atual
@@ -176,6 +195,8 @@ Na validação funcional, as consultas retornaram resultados consistentes com os
 - Identificação de paciente com perfil de pneumonia.
 - Mapeamento de paciente -> diagnóstico -> doença -> tratamento.
 - Relação entre doenças e fatores de risco cadastrados.
+- Cobertura funcional ampliada para 10 consultas SPARQL documentadas em `docs/Catalogo_Consultas_Fase_4.md`.
+- Saída do executor padronizada para tabela e JSON.
 
 Na validação semântica com reasoner (Pellet via Owlready2):
 - A ontologia foi processada sem incoerências na execução.
@@ -186,3 +207,9 @@ Na validação semântica com reasoner (Pellet via Owlready2):
   - `PacienteLuiza` -> `CasoProvavelBronquite`
   - `PacienteCarlos` -> `CasoProvavelCOVID19`
 - Data da validação: 2026-02-10.
+
+Na validação de qualidade de dados com SHACL (Fase 3):
+- Shapes aplicados para `Paciente`, `Exame` e `Diagnostico`.
+- Dataset positivo: conformidade total (`conforms=True`, `violations=0`).
+- Dataset negativo: violações detectadas (`conforms=False`, `violations=5`).
+- Relatório: `docs/Relatorio_Fase_3_SHACL.md`.

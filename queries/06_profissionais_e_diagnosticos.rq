@@ -1,0 +1,9 @@
+PREFIX odsdr: <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/>
+
+SELECT ?profissional ?diagnostico ?doenca
+WHERE {
+  ?profissional a odsdr:ProfissionalSaude ;
+                odsdr:defineDiagnostico ?diagnostico .
+  ?diagnostico odsdr:diagnosticaDoenca ?doenca .
+}
+ORDER BY ?profissional ?diagnostico

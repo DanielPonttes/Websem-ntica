@@ -1,0 +1,67 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix odsdr: <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/> .
+
+odsdr:PacienteShape a sh:NodeShape ;
+    sh:targetClass odsdr:Paciente ;
+    sh:property [
+        sh:path odsdr:idade ;
+        sh:minCount 1 ;
+        sh:datatype xsd:integer ;
+    ] ;
+    sh:property [
+        sh:path odsdr:sexo ;
+        sh:minCount 1 ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path odsdr:fumante ;
+        sh:minCount 1 ;
+        sh:datatype xsd:boolean ;
+    ] ;
+    sh:property [
+        sh:path odsdr:apresenta ;
+        sh:minCount 1 ;
+        sh:class odsdr:Sintoma ;
+    ] ;
+    sh:property [
+        sh:path odsdr:realiza ;
+        sh:minCount 1 ;
+        sh:class odsdr:Exame ;
+    ] ;
+    sh:property [
+        sh:path odsdr:recebeDiagnostico ;
+        sh:minCount 1 ;
+        sh:class odsdr:Diagnostico ;
+    ] .
+
+odsdr:ExameShape a sh:NodeShape ;
+    sh:targetClass odsdr:Exame ;
+    sh:property [
+        sh:path odsdr:examina ;
+        sh:minCount 1 ;
+        sh:class odsdr:Anatomia ;
+    ] .
+
+odsdr:DiagnosticoShape a sh:NodeShape ;
+    sh:targetClass odsdr:Diagnostico ;
+    sh:property [
+        sh:path odsdr:dataDiagnostico ;
+        sh:minCount 1 ;
+        sh:datatype xsd:date ;
+    ] ;
+    sh:property [
+        sh:path odsdr:geradoApartirDe ;
+        sh:minCount 1 ;
+        sh:class odsdr:Exame ;
+    ] ;
+    sh:property [
+        sh:path odsdr:diagnosticaDoenca ;
+        sh:minCount 1 ;
+        sh:class odsdr:Doenca ;
+    ] ;
+    sh:property [
+        sh:path odsdr:geraTratamento ;
+        sh:minCount 1 ;
+        sh:class odsdr:Tratamento ;
+    ] .

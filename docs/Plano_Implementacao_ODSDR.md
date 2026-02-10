@@ -41,22 +41,24 @@ Criterio de conclusao da fase:
 - [x] Minimo de 4 classes de caso provavel classificadas por inferencia
 
 ### Fase 3 - Qualidade de dados
-- [ ] F3.1 Definir perfil minimo de dados obrigatorios por entidade (`Paciente`, `Exame`, `Diagnostico`)
-- [ ] F3.2 Implementar shapes SHACL para validacao desses perfis
-- [ ] F3.3 Criar conjunto de testes positivo e negativo
-- [ ] F3.4 Gerar relatorio de conformidade
+- [x] F3.1 Definir perfil minimo de dados obrigatorios por entidade (`Paciente`, `Exame`, `Diagnostico`)
+- [x] F3.2 Implementar shapes SHACL para validacao desses perfis
+- [x] F3.3 Criar conjunto de testes positivo e negativo
+- [x] F3.4 Gerar relatorio de conformidade em `docs/Relatorio_Fase_3_SHACL.md`
+- [x] F3.5 Registrar resultado da fase em `docs/Plano_Fase_3_ODSDR.md`
 
 Criterio de conclusao da fase:
-- [ ] Suite SHACL executavel com relatorio versionado em `docs/`
+- [x] Suite SHACL executavel com relatorio versionado em `docs/`
 
 ### Fase 4 - Consultas e cobertura funcional
-- [ ] F4.1 Definir catalogo de perguntas de competencia
-- [ ] F4.2 Implementar no minimo 10 queries SPARQL
-- [ ] F4.3 Documentar resultado esperado por query
-- [ ] F4.4 Padronizar saida de `scripts/load_and_query.py` para formato tabular ou JSON
+- [x] F4.1 Definir catalogo de perguntas de competencia em `docs/Catalogo_Consultas_Fase_4.md`
+- [x] F4.2 Implementar no minimo 10 queries SPARQL
+- [x] F4.3 Documentar resultado esperado por query
+- [x] F4.4 Padronizar saida de `scripts/load_and_query.py` para formato tabular ou JSON
+- [x] F4.5 Registrar resultado da fase em `docs/Plano_Fase_4_ODSDR.md`
 
 Criterio de conclusao da fase:
-- [ ] Minimo de 10 queries validadas com resultado esperado documentado
+- [x] Minimo de 10 queries validadas com resultado esperado documentado
 
 ### Fase 5 - Integracao com aplicacao
 - [ ] F5.1 Criar camada de servico para ingestao de casos clinicos
@@ -78,4 +80,5 @@ Criterio de conclusao da fase:
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 .venv/bin/python scripts/load_and_query.py
+.venv/bin/python scripts/validate_shacl.py
 ```
