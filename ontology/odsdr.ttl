@@ -5,139 +5,305 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/> a owl:Ontology ;
-    owl:versionInfo "1.0.0" ;
-    rdfs:comment "ODSDR ontology in OWL 2 DL serialized in Turtle." .
+    owl:versionInfo "1.2.0" ;
+    rdfs:label "ODSDR"@pt-BR ;
+    rdfs:comment "Ontologia ODSDR em OWL 2 DL serializada em Turtle."@pt-BR .
 
-odsdr:Doenca a owl:Class .
-odsdr:Sintoma a owl:Class .
-odsdr:Diagnostico a owl:Class .
-odsdr:Exame a owl:Class .
-odsdr:Tratamento a owl:Class .
+odsdr:Doenca a owl:Class ;
+    rdfs:label "Doenca"@pt-BR ;
+    rdfs:comment "Entidade nosologica do dominio respiratorio."@pt-BR .
+
+odsdr:Sintoma a owl:Class ;
+    rdfs:label "Sintoma"@pt-BR ;
+    rdfs:comment "Manifestacao clinica observavel no paciente."@pt-BR .
+
+odsdr:Diagnostico a owl:Class ;
+    rdfs:label "Diagnostico"@pt-BR ;
+    rdfs:comment "Conclusao clinica sobre uma doenca com base em evidencias."@pt-BR .
+
+odsdr:Exame a owl:Class ;
+    rdfs:label "Exame"@pt-BR ;
+    rdfs:comment "Procedimento de avaliacao clinica complementar."@pt-BR .
+
+odsdr:Tratamento a owl:Class ;
+    rdfs:label "Tratamento"@pt-BR ;
+    rdfs:comment "Intervencao terapeutica para reduzir sintomas ou tratar doenca."@pt-BR .
+
 odsdr:Medicamento a owl:Class ;
-    rdfs:subClassOf odsdr:Tratamento .
-odsdr:FatorRisco a owl:Class .
-odsdr:Anatomia a owl:Class .
-odsdr:Paciente a owl:Class .
-odsdr:ProfissionalSaude a owl:Class .
-odsdr:Causa a owl:Class .
+    rdfs:subClassOf odsdr:Tratamento ;
+    rdfs:label "Medicamento"@pt-BR ;
+    rdfs:comment "Subtipo de tratamento baseado em farmaco."@pt-BR .
+
+odsdr:FatorRisco a owl:Class ;
+    rdfs:label "Fator de risco"@pt-BR ;
+    rdfs:comment "Condicao que aumenta a probabilidade de doenca."@pt-BR .
+
+odsdr:Anatomia a owl:Class ;
+    rdfs:label "Anatomia"@pt-BR ;
+    rdfs:comment "Estrutura anatomica relacionada ao sistema respiratorio."@pt-BR .
+
+odsdr:Paciente a owl:Class ;
+    rdfs:label "Paciente"@pt-BR ;
+    rdfs:comment "Pessoa atendida no contexto clinico."@pt-BR .
+
+odsdr:ProfissionalSaude a owl:Class ;
+    rdfs:label "Profissional de saude"@pt-BR ;
+    rdfs:comment "Profissional responsavel por analise, diagnostico e conduta."@pt-BR .
+
+odsdr:Causa a owl:Class ;
+    rdfs:label "Causa"@pt-BR ;
+    rdfs:comment "Fator etiologico associado a uma doenca."@pt-BR .
+
 odsdr:CasoProvavelPneumonia a owl:Class ;
+    rdfs:label "Caso provavel de pneumonia"@pt-BR ;
+    rdfs:comment "Paciente com tosse, febre e realizacao de raio X de torax."@pt-BR ;
     owl:equivalentClass [
         a owl:Class ;
         owl:intersectionOf (
             odsdr:Paciente
-            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:someValuesFrom odsdr:Tosse ]
-            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:someValuesFrom odsdr:Febre ]
-            [ a owl:Restriction ; owl:onProperty odsdr:realiza ; owl:someValuesFrom odsdr:RaioXTorax ]
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:Tosse ]
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:Febre ]
+            [ a owl:Restriction ; owl:onProperty odsdr:realiza ; owl:hasValue odsdr:RaioXTorax ]
         )
     ] .
 
-odsdr:Doenca owl:disjointWith odsdr:Paciente, odsdr:ProfissionalSaude, odsdr:Exame .
-odsdr:Paciente owl:disjointWith odsdr:ProfissionalSaude, odsdr:Exame .
+odsdr:CasoProvavelAsma a owl:Class ;
+    rdfs:label "Caso provavel de asma"@pt-BR ;
+    rdfs:comment "Paciente com falta de ar, chiado no peito e espirometria."@pt-BR ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            odsdr:Paciente
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:FaltaDeAr ]
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:ChiadoNoPeito ]
+            [ a owl:Restriction ; owl:onProperty odsdr:realiza ; owl:hasValue odsdr:Espirometria ]
+        )
+    ] .
+
+odsdr:CasoProvavelBronquite a owl:Class ;
+    rdfs:label "Caso provavel de bronquite"@pt-BR ;
+    rdfs:comment "Paciente com tosse, chiado no peito e espirometria."@pt-BR ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            odsdr:Paciente
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:Tosse ]
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:ChiadoNoPeito ]
+            [ a owl:Restriction ; owl:onProperty odsdr:realiza ; owl:hasValue odsdr:Espirometria ]
+        )
+    ] .
+
+odsdr:CasoProvavelCOVID19 a owl:Class ;
+    rdfs:label "Caso provavel de COVID-19"@pt-BR ;
+    rdfs:comment "Paciente com tosse, febre e exame PCR."@pt-BR ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            odsdr:Paciente
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:Tosse ]
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:Febre ]
+            [ a owl:Restriction ; owl:onProperty odsdr:realiza ; owl:hasValue odsdr:PCR ]
+        )
+    ] .
+
+[] a owl:AllDisjointClasses ;
+    owl:members (
+        odsdr:Doenca
+        odsdr:Sintoma
+        odsdr:Diagnostico
+        odsdr:Exame
+        odsdr:Tratamento
+        odsdr:FatorRisco
+        odsdr:Anatomia
+        odsdr:Paciente
+        odsdr:ProfissionalSaude
+        odsdr:Causa
+    ) .
 
 odsdr:provoca a owl:ObjectProperty ;
+    rdfs:label "provoca"@pt-BR ;
+    rdfs:comment "Relaciona uma doenca aos sintomas que ela provoca."@pt-BR ;
     rdfs:domain odsdr:Doenca ;
     rdfs:range odsdr:Sintoma ;
     owl:inverseOf odsdr:eSintomaDe .
+
 odsdr:eSintomaDe a owl:ObjectProperty ;
+    rdfs:label "e sintoma de"@pt-BR ;
+    rdfs:comment "Relaciona um sintoma as doencas associadas."@pt-BR ;
     rdfs:domain odsdr:Sintoma ;
     rdfs:range odsdr:Doenca .
 
 odsdr:possuiCausa a owl:ObjectProperty ;
+    rdfs:label "possui causa"@pt-BR ;
+    rdfs:comment "Relaciona doenca a causa etiologica."@pt-BR ;
     rdfs:domain odsdr:Doenca ;
     rdfs:range odsdr:Causa .
+
 odsdr:aflige a owl:ObjectProperty ;
+    rdfs:label "aflige"@pt-BR ;
+    rdfs:comment "Relaciona doenca a paciente afetado."@pt-BR ;
     rdfs:domain odsdr:Doenca ;
     rdfs:range odsdr:Paciente .
+
 odsdr:diagnosticadaPor a owl:ObjectProperty ;
+    rdfs:label "diagnosticada por"@pt-BR ;
+    rdfs:comment "Relaciona doenca ao profissional que a diagnostica."@pt-BR ;
     rdfs:domain odsdr:Doenca ;
     rdfs:range odsdr:ProfissionalSaude .
-odsdr:recebeTratamento a owl:ObjectProperty ;
+
+odsdr:doencaRecebeTratamento a owl:ObjectProperty ;
+    rdfs:label "doenca recebe tratamento"@pt-BR ;
+    rdfs:comment "Relaciona doenca ao tratamento indicado para ela."@pt-BR ;
     rdfs:domain odsdr:Doenca ;
     rdfs:range odsdr:Tratamento .
+
 odsdr:detectadaPor a owl:ObjectProperty ;
+    rdfs:label "detectada por"@pt-BR ;
+    rdfs:comment "Relaciona doenca ao exame que permite detecta-la."@pt-BR ;
     rdfs:domain odsdr:Doenca ;
     rdfs:range odsdr:Exame ;
     owl:inverseOf odsdr:detectaDoenca .
+
 odsdr:detectaDoenca a owl:ObjectProperty ;
+    rdfs:label "detecta doenca"@pt-BR ;
+    rdfs:comment "Relaciona exame as doencas detectadas."@pt-BR ;
     rdfs:domain odsdr:Exame ;
     rdfs:range odsdr:Doenca .
+
 odsdr:ataca a owl:ObjectProperty ;
+    rdfs:label "ataca"@pt-BR ;
+    rdfs:comment "Relaciona doenca a estrutura anatomica afetada."@pt-BR ;
     rdfs:domain odsdr:Doenca ;
     rdfs:range odsdr:Anatomia .
+
 odsdr:facilitadaPor a owl:ObjectProperty ;
+    rdfs:label "facilitada por"@pt-BR ;
+    rdfs:comment "Relaciona doenca aos fatores que favorecem sua ocorrencia."@pt-BR ;
     rdfs:domain odsdr:Doenca ;
     rdfs:range odsdr:FatorRisco .
 
 odsdr:apresenta a owl:ObjectProperty ;
+    rdfs:label "apresenta"@pt-BR ;
+    rdfs:comment "Relaciona paciente aos sintomas apresentados."@pt-BR ;
     rdfs:domain odsdr:Paciente ;
     rdfs:range odsdr:Sintoma .
+
 odsdr:atendidoPor a owl:ObjectProperty ;
+    rdfs:label "atendido por"@pt-BR ;
+    rdfs:comment "Relaciona paciente ao profissional que realiza atendimento."@pt-BR ;
     rdfs:domain odsdr:Paciente ;
     rdfs:range odsdr:ProfissionalSaude .
+
 odsdr:recebeDiagnostico a owl:ObjectProperty ;
+    rdfs:label "recebe diagnostico"@pt-BR ;
+    rdfs:comment "Relaciona paciente ao diagnostico registrado."@pt-BR ;
     rdfs:domain odsdr:Paciente ;
     rdfs:range odsdr:Diagnostico .
+
 odsdr:pacienteRecebeTratamento a owl:ObjectProperty ;
+    rdfs:label "paciente recebe tratamento"@pt-BR ;
+    rdfs:comment "Relaciona paciente ao tratamento recebido."@pt-BR ;
     rdfs:domain odsdr:Paciente ;
     rdfs:range odsdr:Tratamento .
+
 odsdr:realiza a owl:ObjectProperty ;
+    rdfs:label "realiza"@pt-BR ;
+    rdfs:comment "Relaciona paciente aos exames realizados."@pt-BR ;
     rdfs:domain odsdr:Paciente ;
     rdfs:range odsdr:Exame .
+
 odsdr:possuiFatorRisco a owl:ObjectProperty ;
+    rdfs:label "possui fator de risco"@pt-BR ;
+    rdfs:comment "Relaciona paciente aos fatores de risco presentes."@pt-BR ;
     rdfs:domain odsdr:Paciente ;
     rdfs:range odsdr:FatorRisco .
 
 odsdr:defineDiagnostico a owl:ObjectProperty ;
+    rdfs:label "define diagnostico"@pt-BR ;
+    rdfs:comment "Relaciona profissional ao diagnostico definido."@pt-BR ;
     rdfs:domain odsdr:ProfissionalSaude ;
     rdfs:range odsdr:Diagnostico .
+
 odsdr:analisaSintoma a owl:ObjectProperty ;
+    rdfs:label "analisa sintoma"@pt-BR ;
+    rdfs:comment "Relaciona profissional aos sintomas analisados."@pt-BR ;
     rdfs:domain odsdr:ProfissionalSaude ;
     rdfs:range odsdr:Sintoma .
+
 odsdr:prescreveTratamento a owl:ObjectProperty ;
+    rdfs:label "prescreve tratamento"@pt-BR ;
+    rdfs:comment "Relaciona profissional ao tratamento prescrito."@pt-BR ;
     rdfs:domain odsdr:ProfissionalSaude ;
     rdfs:range odsdr:Tratamento .
+
 odsdr:solicitaExame a owl:ObjectProperty ;
+    rdfs:label "solicita exame"@pt-BR ;
+    rdfs:comment "Relaciona profissional aos exames solicitados."@pt-BR ;
     rdfs:domain odsdr:ProfissionalSaude ;
     rdfs:range odsdr:Exame .
 
 odsdr:geraTratamento a owl:ObjectProperty ;
+    rdfs:label "gera tratamento"@pt-BR ;
+    rdfs:comment "Relaciona diagnostico ao tratamento recomendado."@pt-BR ;
     rdfs:domain odsdr:Diagnostico ;
     rdfs:range odsdr:Tratamento .
+
 odsdr:geradoApartirDe a owl:ObjectProperty ;
+    rdfs:label "gerado a partir de"@pt-BR ;
+    rdfs:comment "Relaciona diagnostico aos exames utilizados na decisao."@pt-BR ;
     rdfs:domain odsdr:Diagnostico ;
     rdfs:range odsdr:Exame .
+
 odsdr:diagnosticaDoenca a owl:ObjectProperty ;
+    rdfs:label "diagnostica doenca"@pt-BR ;
+    rdfs:comment "Relaciona diagnostico a doenca concluida."@pt-BR ;
     rdfs:domain odsdr:Diagnostico ;
     rdfs:range odsdr:Doenca .
 
 odsdr:aliviadoPor a owl:ObjectProperty ;
+    rdfs:label "aliviado por"@pt-BR ;
+    rdfs:comment "Relaciona sintoma a tratamento que o alivia."@pt-BR ;
     rdfs:domain odsdr:Sintoma ;
     rdfs:range odsdr:Tratamento .
+
 odsdr:examina a owl:ObjectProperty ;
+    rdfs:label "examina"@pt-BR ;
+    rdfs:comment "Relaciona exame a estrutura anatomica examinada."@pt-BR ;
     rdfs:domain odsdr:Exame ;
     rdfs:range odsdr:Anatomia .
+
 odsdr:predispoe a owl:ObjectProperty ;
+    rdfs:label "predispoe"@pt-BR ;
+    rdfs:comment "Relaciona causa a fator de risco predisponente."@pt-BR ;
     rdfs:domain odsdr:Causa ;
     rdfs:range odsdr:FatorRisco .
+
 odsdr:aumentaRiscoPara a owl:ObjectProperty ;
+    rdfs:label "aumenta risco para"@pt-BR ;
+    rdfs:comment "Relaciona fator de risco as doencas cujo risco e ampliado."@pt-BR ;
     rdfs:domain odsdr:FatorRisco ;
     rdfs:range odsdr:Doenca .
 
 odsdr:idade a owl:DatatypeProperty ;
     rdfs:domain odsdr:Paciente ;
     rdfs:range xsd:integer .
+
 odsdr:sexo a owl:DatatypeProperty ;
     rdfs:domain odsdr:Paciente ;
     rdfs:range xsd:string .
+
 odsdr:fumante a owl:DatatypeProperty ;
     rdfs:domain odsdr:Paciente ;
     rdfs:range xsd:boolean .
+
 odsdr:dataDiagnostico a owl:DatatypeProperty ;
     rdfs:domain odsdr:Diagnostico ;
     rdfs:range xsd:date .
+
 odsdr:resultadoTexto a owl:DatatypeProperty ;
     rdfs:domain odsdr:Exame ;
     rdfs:range xsd:string .
+
 odsdr:resultadoPositivo a owl:DatatypeProperty ;
     rdfs:domain odsdr:Exame ;
     rdfs:range xsd:boolean .
@@ -154,8 +320,10 @@ odsdr:ChiadoNoPeito a owl:NamedIndividual, odsdr:Sintoma .
 
 odsdr:RaioXTorax a owl:NamedIndividual, odsdr:Exame ;
     odsdr:examina odsdr:Pulmoes .
+
 odsdr:PCR a owl:NamedIndividual, odsdr:Exame ;
     odsdr:examina odsdr:Pulmoes .
+
 odsdr:Espirometria a owl:NamedIndividual, odsdr:Exame ;
     odsdr:examina odsdr:Bronquios .
 
@@ -179,7 +347,7 @@ odsdr:Pneumonia
     odsdr:ataca odsdr:Pulmoes ;
     odsdr:possuiCausa odsdr:InfeccaoBacteriana ;
     odsdr:facilitadaPor odsdr:Tabagismo, odsdr:IdadeAvancada ;
-    odsdr:recebeTratamento odsdr:Antibiotico .
+    odsdr:doencaRecebeTratamento odsdr:Antibiotico .
 
 odsdr:COVID19
     odsdr:provoca odsdr:Tosse, odsdr:Febre, odsdr:FaltaDeAr ;
@@ -187,13 +355,13 @@ odsdr:COVID19
     odsdr:ataca odsdr:Pulmoes ;
     odsdr:possuiCausa odsdr:InfeccaoViral ;
     odsdr:facilitadaPor odsdr:ComorbidadePulmonar ;
-    odsdr:recebeTratamento odsdr:Hidratacao .
+    odsdr:doencaRecebeTratamento odsdr:Hidratacao .
 
 odsdr:Asma
     odsdr:provoca odsdr:FaltaDeAr, odsdr:ChiadoNoPeito ;
     odsdr:detectadaPor odsdr:Espirometria ;
     odsdr:ataca odsdr:Bronquios ;
-    odsdr:recebeTratamento odsdr:Broncodilatador .
+    odsdr:doencaRecebeTratamento odsdr:Broncodilatador .
 
 odsdr:Bronquite
     odsdr:provoca odsdr:Tosse, odsdr:ChiadoNoPeito ;

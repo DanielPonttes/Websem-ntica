@@ -31,8 +31,8 @@ Construir uma ontologia para diagnostico semantico de doencas respiratorias com 
 - Definir propriedades de dados minimas para pacientes, diagnosticos e exames.
 
 4. Modelar relacoes clinicas
-- Doenca: `provoca`, `possuiCausa`, `aflige`, `diagnosticadaPor`, `recebeTratamento`, `detectadaPor`, `ataca`, `facilitadaPor`.
-- Paciente: `apresenta`, `atendidoPor`, `recebeDiagnostico`, `recebeTratamento`, `realiza`, `possuiFatorRisco`.
+- Doenca: `provoca`, `possuiCausa`, `aflige`, `diagnosticadaPor`, `doencaRecebeTratamento`, `detectadaPor`, `ataca`, `facilitadaPor`.
+- Paciente: `apresenta`, `atendidoPor`, `recebeDiagnostico`, `pacienteRecebeTratamento`, `realiza`, `possuiFatorRisco`.
 - ProfissionalSaude: `defineDiagnostico`, `analisaSintoma`, `prescreveTratamento`, `solicitaExame`.
 - Diagnostico: `geraTratamento`, `geradoApartirDe`.
 - Complementares: `aliviadoPor`, `examina`, `predispoe`, `aumentaRiscoPara`.
@@ -58,6 +58,9 @@ Construir uma ontologia para diagnostico semantico de doencas respiratorias com 
 ```text
 docs/
   ODSDR_Descricao_Projeto.md
+  Plano_Implementacao_ODSDR.md
+  Plano_Fase_1_ODSDR.md
+  Plano_Fase_2_ODSDR.md
   Roadmap_Implementacao_ODSDR.md
 ontology/
   odsdr.ttl
@@ -71,6 +74,7 @@ scripts/
   load_and_query.py
 requirements.txt
 .venv/
+.local/
 ```
 
 ## Status atual da implementacao
@@ -80,10 +84,13 @@ requirements.txt
   - propriedades objetais e de dados;
   - individuos iniciais (doencas, sintomas, exames, tratamentos, fatores de risco, anatomia e causas);
   - classe inferivel inicial (`CasoProvavelPneumonia`).
+- Concluido: consolidacao semantica da Fase 1 (nomenclatura, labels/comments, dominios/ranges e disjuncoes).
+- Concluido: inferencia clinica da Fase 2 com quatro classes de caso provavel validadas no reasoner.
 - Concluido: dados de exemplo em `data/casos_iniciais.ttl`.
 - Concluido: consultas SPARQL em `queries/*.rq`.
 - Concluido: script de carga/consulta em `scripts/load_and_query.py`.
-- Concluido: ambiente Python com virtualenv local (`.venv`) e dependencia `rdflib` instalada via `requirements.txt`.
+- Concluido: ambiente Python com virtualenv local (`.venv`) e dependencias `rdflib` e `owlready2` em `requirements.txt`.
+- Concluido: Java local em `.local/java25` para execucao do reasoner sem dependencia de Java global.
 
 ## Execucao local
 1. Criar ambiente virtual:
@@ -113,6 +120,9 @@ python scripts/load_and_query.py
   - perfil de pneumonia;
   - diagnosticos e tratamentos por paciente;
   - doencas relacionadas a fatores de risco.
+- A validacao de reasoner (Pellet via Owlready2) executou com sucesso:
+  - sem incoerencias detectadas na execucao;
+  - inferencia de `PacienteJoao` como `CasoProvavelPneumonia`.
 
 ## Criterios de aceite
 1. Ontologia consistente no reasoner OWL.

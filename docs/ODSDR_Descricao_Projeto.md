@@ -138,8 +138,11 @@ Implementação inicial concluída com os seguintes artefatos:
 - Script de execução: `scripts/load_and_query.py`
 - Dependências Python: `requirements.txt`
 - Ambiente virtual local: `.venv/`
+- Runtime Java local para reasoner: `.local/java25/`
 
 O arquivo legado `Doencas-respiratorias.rdf` permanece disponível para interoperabilidade, mas o desenvolvimento ativo está centralizado em Turtle.
+A Fase 1 (consolidação semântica) foi concluída e registrada em `docs/Plano_Fase_1_ODSDR.md`.
+A Fase 2 (inferência clínica) foi concluída e registrada em `docs/Plano_Fase_2_ODSDR.md`.
 
 ---
 
@@ -159,10 +162,27 @@ python3 -m venv .venv
 .venv/bin/python scripts/load_and_query.py
 ```
 
+4. (Opcional) Definir Java local para validações de reasoner:
+```bash
+export JAVA_HOME="$PWD/.local/java25"
+export PATH="$JAVA_HOME/bin:$PATH"
+java -version
+```
+
 ---
 
-## 15. Validação Inicial
-Na validação inicial, as consultas retornaram resultados consistentes com os dados de exemplo:
+## 15. Validação Atual
+Na validação funcional, as consultas retornaram resultados consistentes com os dados de exemplo:
 - Identificação de paciente com perfil de pneumonia.
 - Mapeamento de paciente -> diagnóstico -> doença -> tratamento.
 - Relação entre doenças e fatores de risco cadastrados.
+
+Na validação semântica com reasoner (Pellet via Owlready2):
+- A ontologia foi processada sem incoerências na execução.
+- Evidência de inferência: `PacienteJoao` classificado em `CasoProvavelPneumonia`.
+- Fase 2 validada com 4 classes de caso provável:
+  - `PacienteJoao` -> `CasoProvavelPneumonia`
+  - `PacienteMaria` -> `CasoProvavelAsma`
+  - `PacienteLuiza` -> `CasoProvavelBronquite`
+  - `PacienteCarlos` -> `CasoProvavelCOVID19`
+- Data da validação: 2026-02-10.

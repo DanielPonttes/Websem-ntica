@@ -36,6 +36,16 @@ odsdr:PacienteCarlos a owl:NamedIndividual, odsdr:Paciente ;
     odsdr:recebeDiagnostico odsdr:DiagnosticoCarlos ;
     odsdr:pacienteRecebeTratamento odsdr:Hidratacao .
 
+odsdr:PacienteLuiza a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 51 ;
+    odsdr:sexo "F" ;
+    odsdr:fumante false ;
+    odsdr:apresenta odsdr:Tosse, odsdr:ChiadoNoPeito ;
+    odsdr:realiza odsdr:Espirometria ;
+    odsdr:atendidoPor odsdr:MedicoBruno ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoLuiza ;
+    odsdr:pacienteRecebeTratamento odsdr:Hidratacao .
+
 odsdr:MedicaAna a owl:NamedIndividual, odsdr:ProfissionalSaude ;
     odsdr:analisaSintoma odsdr:Tosse, odsdr:Febre ;
     odsdr:solicitaExame odsdr:RaioXTorax, odsdr:PCR ;
@@ -45,8 +55,8 @@ odsdr:MedicaAna a owl:NamedIndividual, odsdr:ProfissionalSaude ;
 odsdr:MedicoBruno a owl:NamedIndividual, odsdr:ProfissionalSaude ;
     odsdr:analisaSintoma odsdr:FaltaDeAr, odsdr:ChiadoNoPeito ;
     odsdr:solicitaExame odsdr:Espirometria ;
-    odsdr:defineDiagnostico odsdr:DiagnosticoMaria ;
-    odsdr:prescreveTratamento odsdr:Broncodilatador .
+    odsdr:defineDiagnostico odsdr:DiagnosticoMaria, odsdr:DiagnosticoLuiza ;
+    odsdr:prescreveTratamento odsdr:Broncodilatador, odsdr:Hidratacao .
 
 odsdr:DiagnosticoJoao a owl:NamedIndividual, odsdr:Diagnostico ;
     odsdr:dataDiagnostico "2026-02-10"^^xsd:date ;
@@ -64,4 +74,10 @@ odsdr:DiagnosticoCarlos a owl:NamedIndividual, odsdr:Diagnostico ;
     odsdr:dataDiagnostico "2026-02-10"^^xsd:date ;
     odsdr:geradoApartirDe odsdr:PCR ;
     odsdr:diagnosticaDoenca odsdr:COVID19 ;
+    odsdr:geraTratamento odsdr:Hidratacao .
+
+odsdr:DiagnosticoLuiza a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-10"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:Espirometria ;
+    odsdr:diagnosticaDoenca odsdr:Bronquite ;
     odsdr:geraTratamento odsdr:Hidratacao .
