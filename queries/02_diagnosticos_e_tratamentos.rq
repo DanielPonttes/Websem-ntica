@@ -1,0 +1,10 @@
+PREFIX odsdr: <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/>
+
+SELECT ?paciente ?diagnostico ?doenca ?tratamento
+WHERE {
+  ?paciente a odsdr:Paciente ;
+            odsdr:recebeDiagnostico ?diagnostico .
+  ?diagnostico odsdr:diagnosticaDoenca ?doenca ;
+               odsdr:geraTratamento ?tratamento .
+}
+ORDER BY ?paciente

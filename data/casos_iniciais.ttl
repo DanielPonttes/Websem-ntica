@@ -1,0 +1,67 @@
+@prefix odsdr: <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-data/1.0> a owl:Ontology ;
+    owl:imports <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/> .
+
+odsdr:PacienteJoao a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 67 ;
+    odsdr:sexo "M" ;
+    odsdr:fumante true ;
+    odsdr:apresenta odsdr:Tosse, odsdr:Febre ;
+    odsdr:possuiFatorRisco odsdr:Tabagismo, odsdr:IdadeAvancada ;
+    odsdr:realiza odsdr:RaioXTorax ;
+    odsdr:atendidoPor odsdr:MedicaAna ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoJoao ;
+    odsdr:pacienteRecebeTratamento odsdr:Antibiotico .
+
+odsdr:PacienteMaria a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 29 ;
+    odsdr:sexo "F" ;
+    odsdr:fumante false ;
+    odsdr:apresenta odsdr:FaltaDeAr, odsdr:ChiadoNoPeito ;
+    odsdr:realiza odsdr:Espirometria ;
+    odsdr:atendidoPor odsdr:MedicoBruno ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoMaria ;
+    odsdr:pacienteRecebeTratamento odsdr:Broncodilatador .
+
+odsdr:PacienteCarlos a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 42 ;
+    odsdr:sexo "M" ;
+    odsdr:fumante false ;
+    odsdr:apresenta odsdr:Tosse, odsdr:Febre ;
+    odsdr:realiza odsdr:PCR ;
+    odsdr:atendidoPor odsdr:MedicaAna ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoCarlos ;
+    odsdr:pacienteRecebeTratamento odsdr:Hidratacao .
+
+odsdr:MedicaAna a owl:NamedIndividual, odsdr:ProfissionalSaude ;
+    odsdr:analisaSintoma odsdr:Tosse, odsdr:Febre ;
+    odsdr:solicitaExame odsdr:RaioXTorax, odsdr:PCR ;
+    odsdr:defineDiagnostico odsdr:DiagnosticoJoao, odsdr:DiagnosticoCarlos ;
+    odsdr:prescreveTratamento odsdr:Antibiotico, odsdr:Hidratacao .
+
+odsdr:MedicoBruno a owl:NamedIndividual, odsdr:ProfissionalSaude ;
+    odsdr:analisaSintoma odsdr:FaltaDeAr, odsdr:ChiadoNoPeito ;
+    odsdr:solicitaExame odsdr:Espirometria ;
+    odsdr:defineDiagnostico odsdr:DiagnosticoMaria ;
+    odsdr:prescreveTratamento odsdr:Broncodilatador .
+
+odsdr:DiagnosticoJoao a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-10"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:RaioXTorax ;
+    odsdr:diagnosticaDoenca odsdr:Pneumonia ;
+    odsdr:geraTratamento odsdr:Antibiotico .
+
+odsdr:DiagnosticoMaria a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-10"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:Espirometria ;
+    odsdr:diagnosticaDoenca odsdr:Asma ;
+    odsdr:geraTratamento odsdr:Broncodilatador .
+
+odsdr:DiagnosticoCarlos a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-10"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:PCR ;
+    odsdr:diagnosticaDoenca odsdr:COVID19 ;
+    odsdr:geraTratamento odsdr:Hidratacao .

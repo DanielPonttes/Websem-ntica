@@ -1,0 +1,8 @@
+PREFIX odsdr: <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/>
+
+SELECT ?fatorRisco ?doenca
+WHERE {
+  ?doenca a odsdr:Doenca ;
+          odsdr:facilitadaPor ?fatorRisco .
+}
+ORDER BY ?fatorRisco ?doenca

@@ -1,0 +1,9 @@
+PREFIX odsdr: <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/>
+
+SELECT DISTINCT ?paciente
+WHERE {
+  ?paciente a odsdr:Paciente ;
+            odsdr:apresenta odsdr:Tosse ;
+            odsdr:apresenta odsdr:Febre ;
+            odsdr:realiza odsdr:RaioXTorax .
+}

@@ -1,0 +1,200 @@
+@prefix odsdr: <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/> a owl:Ontology ;
+    owl:versionInfo "1.0.0" ;
+    rdfs:comment "ODSDR ontology in OWL 2 DL serialized in Turtle." .
+
+odsdr:Doenca a owl:Class .
+odsdr:Sintoma a owl:Class .
+odsdr:Diagnostico a owl:Class .
+odsdr:Exame a owl:Class .
+odsdr:Tratamento a owl:Class .
+odsdr:Medicamento a owl:Class ;
+    rdfs:subClassOf odsdr:Tratamento .
+odsdr:FatorRisco a owl:Class .
+odsdr:Anatomia a owl:Class .
+odsdr:Paciente a owl:Class .
+odsdr:ProfissionalSaude a owl:Class .
+odsdr:Causa a owl:Class .
+odsdr:CasoProvavelPneumonia a owl:Class ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            odsdr:Paciente
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:someValuesFrom odsdr:Tosse ]
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:someValuesFrom odsdr:Febre ]
+            [ a owl:Restriction ; owl:onProperty odsdr:realiza ; owl:someValuesFrom odsdr:RaioXTorax ]
+        )
+    ] .
+
+odsdr:Doenca owl:disjointWith odsdr:Paciente, odsdr:ProfissionalSaude, odsdr:Exame .
+odsdr:Paciente owl:disjointWith odsdr:ProfissionalSaude, odsdr:Exame .
+
+odsdr:provoca a owl:ObjectProperty ;
+    rdfs:domain odsdr:Doenca ;
+    rdfs:range odsdr:Sintoma ;
+    owl:inverseOf odsdr:eSintomaDe .
+odsdr:eSintomaDe a owl:ObjectProperty ;
+    rdfs:domain odsdr:Sintoma ;
+    rdfs:range odsdr:Doenca .
+
+odsdr:possuiCausa a owl:ObjectProperty ;
+    rdfs:domain odsdr:Doenca ;
+    rdfs:range odsdr:Causa .
+odsdr:aflige a owl:ObjectProperty ;
+    rdfs:domain odsdr:Doenca ;
+    rdfs:range odsdr:Paciente .
+odsdr:diagnosticadaPor a owl:ObjectProperty ;
+    rdfs:domain odsdr:Doenca ;
+    rdfs:range odsdr:ProfissionalSaude .
+odsdr:recebeTratamento a owl:ObjectProperty ;
+    rdfs:domain odsdr:Doenca ;
+    rdfs:range odsdr:Tratamento .
+odsdr:detectadaPor a owl:ObjectProperty ;
+    rdfs:domain odsdr:Doenca ;
+    rdfs:range odsdr:Exame ;
+    owl:inverseOf odsdr:detectaDoenca .
+odsdr:detectaDoenca a owl:ObjectProperty ;
+    rdfs:domain odsdr:Exame ;
+    rdfs:range odsdr:Doenca .
+odsdr:ataca a owl:ObjectProperty ;
+    rdfs:domain odsdr:Doenca ;
+    rdfs:range odsdr:Anatomia .
+odsdr:facilitadaPor a owl:ObjectProperty ;
+    rdfs:domain odsdr:Doenca ;
+    rdfs:range odsdr:FatorRisco .
+
+odsdr:apresenta a owl:ObjectProperty ;
+    rdfs:domain odsdr:Paciente ;
+    rdfs:range odsdr:Sintoma .
+odsdr:atendidoPor a owl:ObjectProperty ;
+    rdfs:domain odsdr:Paciente ;
+    rdfs:range odsdr:ProfissionalSaude .
+odsdr:recebeDiagnostico a owl:ObjectProperty ;
+    rdfs:domain odsdr:Paciente ;
+    rdfs:range odsdr:Diagnostico .
+odsdr:pacienteRecebeTratamento a owl:ObjectProperty ;
+    rdfs:domain odsdr:Paciente ;
+    rdfs:range odsdr:Tratamento .
+odsdr:realiza a owl:ObjectProperty ;
+    rdfs:domain odsdr:Paciente ;
+    rdfs:range odsdr:Exame .
+odsdr:possuiFatorRisco a owl:ObjectProperty ;
+    rdfs:domain odsdr:Paciente ;
+    rdfs:range odsdr:FatorRisco .
+
+odsdr:defineDiagnostico a owl:ObjectProperty ;
+    rdfs:domain odsdr:ProfissionalSaude ;
+    rdfs:range odsdr:Diagnostico .
+odsdr:analisaSintoma a owl:ObjectProperty ;
+    rdfs:domain odsdr:ProfissionalSaude ;
+    rdfs:range odsdr:Sintoma .
+odsdr:prescreveTratamento a owl:ObjectProperty ;
+    rdfs:domain odsdr:ProfissionalSaude ;
+    rdfs:range odsdr:Tratamento .
+odsdr:solicitaExame a owl:ObjectProperty ;
+    rdfs:domain odsdr:ProfissionalSaude ;
+    rdfs:range odsdr:Exame .
+
+odsdr:geraTratamento a owl:ObjectProperty ;
+    rdfs:domain odsdr:Diagnostico ;
+    rdfs:range odsdr:Tratamento .
+odsdr:geradoApartirDe a owl:ObjectProperty ;
+    rdfs:domain odsdr:Diagnostico ;
+    rdfs:range odsdr:Exame .
+odsdr:diagnosticaDoenca a owl:ObjectProperty ;
+    rdfs:domain odsdr:Diagnostico ;
+    rdfs:range odsdr:Doenca .
+
+odsdr:aliviadoPor a owl:ObjectProperty ;
+    rdfs:domain odsdr:Sintoma ;
+    rdfs:range odsdr:Tratamento .
+odsdr:examina a owl:ObjectProperty ;
+    rdfs:domain odsdr:Exame ;
+    rdfs:range odsdr:Anatomia .
+odsdr:predispoe a owl:ObjectProperty ;
+    rdfs:domain odsdr:Causa ;
+    rdfs:range odsdr:FatorRisco .
+odsdr:aumentaRiscoPara a owl:ObjectProperty ;
+    rdfs:domain odsdr:FatorRisco ;
+    rdfs:range odsdr:Doenca .
+
+odsdr:idade a owl:DatatypeProperty ;
+    rdfs:domain odsdr:Paciente ;
+    rdfs:range xsd:integer .
+odsdr:sexo a owl:DatatypeProperty ;
+    rdfs:domain odsdr:Paciente ;
+    rdfs:range xsd:string .
+odsdr:fumante a owl:DatatypeProperty ;
+    rdfs:domain odsdr:Paciente ;
+    rdfs:range xsd:boolean .
+odsdr:dataDiagnostico a owl:DatatypeProperty ;
+    rdfs:domain odsdr:Diagnostico ;
+    rdfs:range xsd:date .
+odsdr:resultadoTexto a owl:DatatypeProperty ;
+    rdfs:domain odsdr:Exame ;
+    rdfs:range xsd:string .
+odsdr:resultadoPositivo a owl:DatatypeProperty ;
+    rdfs:domain odsdr:Exame ;
+    rdfs:range xsd:boolean .
+
+odsdr:Asma a owl:NamedIndividual, odsdr:Doenca .
+odsdr:Bronquite a owl:NamedIndividual, odsdr:Doenca .
+odsdr:Pneumonia a owl:NamedIndividual, odsdr:Doenca .
+odsdr:COVID19 a owl:NamedIndividual, odsdr:Doenca .
+
+odsdr:Tosse a owl:NamedIndividual, odsdr:Sintoma .
+odsdr:Febre a owl:NamedIndividual, odsdr:Sintoma .
+odsdr:FaltaDeAr a owl:NamedIndividual, odsdr:Sintoma .
+odsdr:ChiadoNoPeito a owl:NamedIndividual, odsdr:Sintoma .
+
+odsdr:RaioXTorax a owl:NamedIndividual, odsdr:Exame ;
+    odsdr:examina odsdr:Pulmoes .
+odsdr:PCR a owl:NamedIndividual, odsdr:Exame ;
+    odsdr:examina odsdr:Pulmoes .
+odsdr:Espirometria a owl:NamedIndividual, odsdr:Exame ;
+    odsdr:examina odsdr:Bronquios .
+
+odsdr:Antibiotico a owl:NamedIndividual, odsdr:Tratamento .
+odsdr:Broncodilatador a owl:NamedIndividual, odsdr:Medicamento .
+odsdr:Hidratacao a owl:NamedIndividual, odsdr:Tratamento .
+
+odsdr:Tabagismo a owl:NamedIndividual, odsdr:FatorRisco .
+odsdr:IdadeAvancada a owl:NamedIndividual, odsdr:FatorRisco .
+odsdr:ComorbidadePulmonar a owl:NamedIndividual, odsdr:FatorRisco .
+
+odsdr:Pulmoes a owl:NamedIndividual, odsdr:Anatomia .
+odsdr:Bronquios a owl:NamedIndividual, odsdr:Anatomia .
+
+odsdr:InfeccaoBacteriana a owl:NamedIndividual, odsdr:Causa .
+odsdr:InfeccaoViral a owl:NamedIndividual, odsdr:Causa .
+
+odsdr:Pneumonia
+    odsdr:provoca odsdr:Tosse, odsdr:Febre, odsdr:FaltaDeAr ;
+    odsdr:detectadaPor odsdr:RaioXTorax ;
+    odsdr:ataca odsdr:Pulmoes ;
+    odsdr:possuiCausa odsdr:InfeccaoBacteriana ;
+    odsdr:facilitadaPor odsdr:Tabagismo, odsdr:IdadeAvancada ;
+    odsdr:recebeTratamento odsdr:Antibiotico .
+
+odsdr:COVID19
+    odsdr:provoca odsdr:Tosse, odsdr:Febre, odsdr:FaltaDeAr ;
+    odsdr:detectadaPor odsdr:PCR ;
+    odsdr:ataca odsdr:Pulmoes ;
+    odsdr:possuiCausa odsdr:InfeccaoViral ;
+    odsdr:facilitadaPor odsdr:ComorbidadePulmonar ;
+    odsdr:recebeTratamento odsdr:Hidratacao .
+
+odsdr:Asma
+    odsdr:provoca odsdr:FaltaDeAr, odsdr:ChiadoNoPeito ;
+    odsdr:detectadaPor odsdr:Espirometria ;
+    odsdr:ataca odsdr:Bronquios ;
+    odsdr:recebeTratamento odsdr:Broncodilatador .
+
+odsdr:Bronquite
+    odsdr:provoca odsdr:Tosse, odsdr:ChiadoNoPeito ;
+    odsdr:ataca odsdr:Bronquios .
