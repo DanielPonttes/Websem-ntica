@@ -15,6 +15,14 @@ Evoluir a ontologia ODSDR para uma base semantica validada, inferivel e integrad
 - [x] Script de execucao criado em `scripts/load_and_query.py`
 - [x] Ambiente Python preparado (`.venv` + `requirements.txt`)
 
+## Atualizacao de execucao (2026-02-10)
+- Fases 1 a 5 concluidas com criterio de aceite atendido.
+- Revalidacao operacional executada:
+  - `scripts/load_and_query.py` com formatos `table` e `json`.
+  - `scripts/validate_shacl.py` com conformidade positiva e violacoes esperadas no dataset negativo.
+  - `scripts/test_api_service.py` com smoke test aprovado para health, queries, ingestao e exportacao.
+- Runtime Java local registrado para reasoner em `.local/java25`.
+
 ## Checklist executavel por fase
 
 ### Fase 1 - Consolidacao semantica
@@ -61,18 +69,19 @@ Criterio de conclusao da fase:
 - [x] Minimo de 10 queries validadas com resultado esperado documentado
 
 ### Fase 5 - Integracao com aplicacao
-- [ ] F5.1 Criar camada de servico para ingestao de casos clinicos
-- [ ] F5.2 Expor consultas semanticas para consumo externo (API ou interface)
-- [ ] F5.3 Definir estrategia de versionamento da ontologia (`1.0`, `1.1`, `2.0`)
-- [ ] F5.4 Documentar fluxo de carga, consulta e exportacao ponta a ponta
+- [x] F5.1 Criar camada de servico para ingestao de casos clinicos
+- [x] F5.2 Expor consultas semanticas para consumo externo (API ou interface)
+- [x] F5.3 Definir estrategia de versionamento da ontologia (`1.0`, `1.1`, `2.0`)
+- [x] F5.4 Documentar fluxo de carga, consulta e exportacao ponta a ponta
+- [x] F5.5 Registrar resultado da fase em `docs/Plano_Fase_5_ODSDR.md`
 
 Criterio de conclusao da fase:
-- [ ] Pipeline reproduzivel de carga, consulta e exportacao
+- [x] Pipeline reproduzivel de carga, consulta e exportacao
 
 ## Backlog tecnico prioritario
 - [ ] B1 Adicionar testes automatizados para queries SPARQL
 - [ ] B2 Criar workflow de CI para validacao de TTL e execucao de queries
-- [ ] B3 Documentar convencao de IRI e padrao de individuos
+- [x] B3 Documentar convencao de IRI e padrao de individuos
 - [ ] B4 Planejar interoperabilidade com SNOMED CT e ICD
 
 ## Comandos operacionais
@@ -81,4 +90,6 @@ python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 .venv/bin/python scripts/load_and_query.py
 .venv/bin/python scripts/validate_shacl.py
+.venv/bin/python scripts/test_api_service.py
+.venv/bin/uvicorn service.semantic_api:app --host 127.0.0.1 --port 8000
 ```

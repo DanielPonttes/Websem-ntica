@@ -104,6 +104,8 @@ Fluxo geral:
 - SPARQL
 - Owlready2
 - SHACL / pySHACL
+- FastAPI
+- Uvicorn
 - LangChain (futuro)
 - LLMs (futuro)
 
@@ -138,19 +140,25 @@ Implementação inicial concluída com os seguintes artefatos:
 - Consultas SPARQL: `queries/01_pacientes_com_perfil_pneumonia.rq`, `queries/02_diagnosticos_e_tratamentos.rq`, `queries/03_doencas_por_fator_risco.rq`
 - Script de execução: `scripts/load_and_query.py`
 - Script de validação SHACL: `scripts/validate_shacl.py`
+- Script de smoke test da API: `scripts/test_api_service.py`
 - Dependências Python: `requirements.txt`
 - Ambiente virtual local: `.venv/`
 - Runtime Java local para reasoner: `.local/java25/`
+- API semântica: `service/semantic_api.py`
 - Shapes SHACL: `shacl/odsdr_shapes.ttl`
 - Datasets de validação SHACL: `data/validation/positivo_shacl.ttl`, `data/validation/negativo_shacl.ttl`
+- Dados de ingestão operacional: `data/cases_ingestao.ttl`
 - Relatório SHACL: `docs/Relatorio_Fase_3_SHACL.md`
 - Catálogo de consultas da Fase 4: `docs/Catalogo_Consultas_Fase_4.md`
+- Estratégia de versionamento: `docs/Estrategia_Versionamento_ODSDR.md`
+- Fluxo ponta a ponta: `docs/Fluxo_Ponta_a_Ponta_ODSDR.md`
 
 O arquivo legado `Doencas-respiratorias.rdf` permanece disponível para interoperabilidade, mas o desenvolvimento ativo está centralizado em Turtle.
 A Fase 1 (consolidação semântica) foi concluída e registrada em `docs/Plano_Fase_1_ODSDR.md`.
 A Fase 2 (inferência clínica) foi concluída e registrada em `docs/Plano_Fase_2_ODSDR.md`.
 A Fase 3 (qualidade de dados com SHACL) foi concluída e registrada em `docs/Plano_Fase_3_ODSDR.md`.
 A Fase 4 (consultas e cobertura funcional) foi concluída e registrada em `docs/Plano_Fase_4_ODSDR.md`.
+A Fase 5 (integração com aplicação) foi concluída e registrada em `docs/Plano_Fase_5_ODSDR.md`.
 
 ---
 
@@ -188,6 +196,16 @@ java -version
 .venv/bin/python scripts/load_and_query.py --format json
 ```
 
+7. Subir API semântica:
+```bash
+.venv/bin/uvicorn service.semantic_api:app --host 127.0.0.1 --port 8000
+```
+
+8. Executar smoke test da API:
+```bash
+.venv/bin/python scripts/test_api_service.py
+```
+
 ---
 
 ## 15. Validação Atual
@@ -213,3 +231,22 @@ Na validação de qualidade de dados com SHACL (Fase 3):
 - Dataset positivo: conformidade total (`conforms=True`, `violations=0`).
 - Dataset negativo: violações detectadas (`conforms=False`, `violations=5`).
 - Relatório: `docs/Relatorio_Fase_3_SHACL.md`.
+
+Na validação da integração com aplicação (Fase 5):
+- Camada de serviço implementada para ingestão de casos (`POST /cases`).
+- Consultas semânticas expostas por API (`GET /queries`, `GET /queries/{query}`).
+- Exportação de grafo exposta (`GET /export`).
+- Smoke test da API concluído com sucesso via `scripts/test_api_service.py`.
+
+---
+
+## 16. Atualizacao Documental (2026-02-10)
+- Documentacao consolidada para refletir a conclusao das Fases 1 a 5.
+- Estrutura de artefatos tecnicos validada:
+  - Ontologia e dados (`ontology/`, `data/`)
+  - Validacao e consultas (`shacl/`, `queries/`, `scripts/`)
+  - Integracao de aplicacao (`service/semantic_api.py`)
+- Referencias operacionais atualizadas em:
+  - `docs/Plano_Implementacao_ODSDR.md`
+  - `docs/Roadmap_Implementacao_ODSDR.md`
+  - `docs/Plano_Fase_5_ODSDR.md`

@@ -2,6 +2,14 @@
 
 Projeto de modelagem ontologica em OWL 2 DL (serializacao Turtle) para suporte a diagnostico semantico de doencas respiratorias.
 
+## Status atual (2026-02-10)
+- Fases 1, 2, 3, 4 e 5 concluidas e documentadas em `docs/`.
+- Ontologia, dados iniciais, validacao SHACL, consultas SPARQL e API semantica operacionais.
+- Validacoes recentes concluidas:
+  - `.venv/bin/python scripts/load_and_query.py --format json`
+  - `.venv/bin/python scripts/validate_shacl.py`
+  - `.venv/bin/python scripts/test_api_service.py`
+
 ## Estrutura do projeto
 ```text
 docs/
@@ -13,15 +21,21 @@ docs/
   Plano_Fase_2_ODSDR.md
   Plano_Fase_3_ODSDR.md
   Plano_Fase_4_ODSDR.md
+  Plano_Fase_5_ODSDR.md
   Catalogo_Consultas_Fase_4.md
+  Estrategia_Versionamento_ODSDR.md
+  Fluxo_Ponta_a_Ponta_ODSDR.md
   Relatorio_Fase_3_SHACL.md
 ontology/
   odsdr.ttl
 data/
   casos_iniciais.ttl
+  cases_ingestao.ttl
   validation/
     positivo_shacl.ttl
     negativo_shacl.ttl
+service/
+  semantic_api.py
 shacl/
   odsdr_shapes.ttl
 queries/
@@ -31,6 +45,7 @@ queries/
 scripts/
   load_and_query.py
   validate_shacl.py
+  test_api_service.py
 requirements.txt
 ```
 
@@ -77,6 +92,27 @@ Artefatos gerados/validados:
 Observacao:
 - `.local/` e `.venv/` estao no `.gitignore` para nao versionar runtimes locais.
 
+## API Semantica (Fase 5)
+Subir API:
+```bash
+.venv/bin/uvicorn service.semantic_api:app --host 127.0.0.1 --port 8000
+```
+
+Observacao:
+- Em ambientes restritos que bloqueiam bind de porta, validar a camada de servico via smoke test.
+
+Endpoints principais:
+- `GET /health`
+- `GET /queries`
+- `GET /queries/{query_name}?format=json|table`
+- `POST /cases`
+- `GET /export?format=turtle|json-ld|nt`
+
+Smoke test local:
+```bash
+.venv/bin/python scripts/test_api_service.py
+```
+
 ## Fontes de verdade
 - `docs/Doenças Respiratórias.md` (principal)
 - `docs/ODSDR_Descricao_Projeto.md`
@@ -89,3 +125,6 @@ Observacao:
 - Plano detalhado da Fase 3: `docs/Plano_Fase_3_ODSDR.md`
 - Plano detalhado da Fase 4: `docs/Plano_Fase_4_ODSDR.md`
 - Catalogo de consultas (Fase 4): `docs/Catalogo_Consultas_Fase_4.md`
+- Plano detalhado da Fase 5: `docs/Plano_Fase_5_ODSDR.md`
+- Estrategia de versionamento: `docs/Estrategia_Versionamento_ODSDR.md`
+- Fluxo ponta a ponta: `docs/Fluxo_Ponta_a_Ponta_ODSDR.md`

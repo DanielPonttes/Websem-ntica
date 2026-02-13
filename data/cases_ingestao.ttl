@@ -1,0 +1,93 @@
+@prefix odsdr: <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ingest-data/1.0> a owl:Ontology ;
+    owl:imports odsdr: .
+
+odsdr:PacienteApi20260210055135 a odsdr:Paciente,
+        owl:NamedIndividual ;
+    odsdr:apresenta odsdr:Febre,
+        odsdr:Tosse ;
+    odsdr:atendidoPor odsdr:MedicaAna ;
+    odsdr:fumante false ;
+    odsdr:idade 38 ;
+    odsdr:pacienteRecebeTratamento odsdr:Hidratacao ;
+    odsdr:realiza odsdr:PCR ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoApi20260210055135 ;
+    odsdr:sexo "F" .
+
+odsdr:PacienteApi20260210055449 a odsdr:Paciente,
+        owl:NamedIndividual ;
+    odsdr:apresenta odsdr:Febre,
+        odsdr:Tosse ;
+    odsdr:atendidoPor odsdr:MedicaAna ;
+    odsdr:fumante false ;
+    odsdr:idade 38 ;
+    odsdr:pacienteRecebeTratamento odsdr:Hidratacao ;
+    odsdr:realiza odsdr:PCR ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoApi20260210055449 ;
+    odsdr:sexo "F" .
+
+odsdr:PacienteApi20260210055615 a odsdr:Paciente,
+        owl:NamedIndividual ;
+    odsdr:apresenta odsdr:Febre,
+        odsdr:Tosse ;
+    odsdr:atendidoPor odsdr:MedicaAna ;
+    odsdr:fumante false ;
+    odsdr:idade 38 ;
+    odsdr:pacienteRecebeTratamento odsdr:Hidratacao ;
+    odsdr:realiza odsdr:PCR ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoApi20260210055615 ;
+    odsdr:sexo "F" .
+
+odsdr:PacienteCli20260210054657 a odsdr:Paciente,
+        owl:NamedIndividual ;
+    odsdr:apresenta odsdr:Febre,
+        odsdr:Tosse ;
+    odsdr:atendidoPor odsdr:MedicaAna ;
+    odsdr:fumante false ;
+    odsdr:idade 45 ;
+    odsdr:pacienteRecebeTratamento odsdr:Hidratacao ;
+    odsdr:realiza odsdr:PCR ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoCli20260210054657 ;
+    odsdr:sexo "M" .
+
+odsdr:DiagnosticoApi20260210055135 a odsdr:Diagnostico,
+        owl:NamedIndividual ;
+    odsdr:dataDiagnostico "2026-02-10"^^xsd:date ;
+    odsdr:diagnosticaDoenca odsdr:COVID19 ;
+    odsdr:geraTratamento odsdr:Hidratacao ;
+    odsdr:geradoApartirDe odsdr:PCR .
+
+odsdr:DiagnosticoApi20260210055449 a odsdr:Diagnostico,
+        owl:NamedIndividual ;
+    odsdr:dataDiagnostico "2026-02-10"^^xsd:date ;
+    odsdr:diagnosticaDoenca odsdr:COVID19 ;
+    odsdr:geraTratamento odsdr:Hidratacao ;
+    odsdr:geradoApartirDe odsdr:PCR .
+
+odsdr:DiagnosticoApi20260210055615 a odsdr:Diagnostico,
+        owl:NamedIndividual ;
+    odsdr:dataDiagnostico "2026-02-10"^^xsd:date ;
+    odsdr:diagnosticaDoenca odsdr:COVID19 ;
+    odsdr:geraTratamento odsdr:Hidratacao ;
+    odsdr:geradoApartirDe odsdr:PCR .
+
+odsdr:DiagnosticoCli20260210054657 a odsdr:Diagnostico,
+        owl:NamedIndividual ;
+    odsdr:dataDiagnostico "2026-02-10"^^xsd:date ;
+    odsdr:diagnosticaDoenca odsdr:COVID19 ;
+    odsdr:geraTratamento odsdr:Hidratacao ;
+    odsdr:geradoApartirDe odsdr:PCR .
+
+odsdr:COVID19 odsdr:aflige odsdr:PacienteApi20260210055135,
+        odsdr:PacienteApi20260210055449,
+        odsdr:PacienteApi20260210055615,
+        odsdr:PacienteCli20260210054657 .
+
+odsdr:MedicaAna odsdr:defineDiagnostico odsdr:DiagnosticoApi20260210055135,
+        odsdr:DiagnosticoApi20260210055449,
+        odsdr:DiagnosticoApi20260210055615,
+        odsdr:DiagnosticoCli20260210054657 .
+

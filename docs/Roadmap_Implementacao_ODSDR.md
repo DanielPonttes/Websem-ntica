@@ -63,16 +63,22 @@ docs/
   Plano_Fase_2_ODSDR.md
   Plano_Fase_3_ODSDR.md
   Plano_Fase_4_ODSDR.md
+  Plano_Fase_5_ODSDR.md
   Catalogo_Consultas_Fase_4.md
+  Estrategia_Versionamento_ODSDR.md
+  Fluxo_Ponta_a_Ponta_ODSDR.md
   Relatorio_Fase_3_SHACL.md
   Roadmap_Implementacao_ODSDR.md
 ontology/
   odsdr.ttl
 data/
   casos_iniciais.ttl
+  cases_ingestao.ttl
   validation/
     positivo_shacl.ttl
     negativo_shacl.ttl
+service/
+  semantic_api.py
 shacl/
   odsdr_shapes.ttl
 queries/
@@ -82,6 +88,7 @@ queries/
 scripts/
   load_and_query.py
   validate_shacl.py
+  test_api_service.py
 requirements.txt
 .venv/
 .local/
@@ -98,10 +105,13 @@ requirements.txt
 - Concluido: inferencia clinica da Fase 2 com quatro classes de caso provavel validadas no reasoner.
 - Concluido: qualidade de dados da Fase 3 com perfis SHACL, datasets positivo/negativo e relatorio versionado.
 - Concluido: cobertura funcional da Fase 4 com catalogo de perguntas de competencia e 10 queries SPARQL.
+- Concluido: integracao com aplicacao na Fase 5 com API semantica, estrategia de versionamento e fluxo ponta a ponta.
 - Concluido: dados de exemplo em `data/casos_iniciais.ttl`.
+- Concluido: dados operacionais de ingestao em `data/cases_ingestao.ttl`.
 - Concluido: consultas SPARQL em `queries/*.rq`.
 - Concluido: script de carga/consulta em `scripts/load_and_query.py`.
 - Concluido: padronizacao do script de consultas com saida `table` e `json`.
+- Concluido: script de smoke test da API em `scripts/test_api_service.py`.
 - Concluido: ambiente Python com virtualenv local (`.venv`) e dependencias `rdflib`, `owlready2` e `pyshacl` em `requirements.txt`.
 - Concluido: Java local em `.local/java25` para execucao do reasoner sem dependencia de Java global.
 
@@ -132,6 +142,11 @@ source .venv/bin/activate
 python scripts/load_and_query.py
 ```
 
+6. Subir API semantica:
+```bash
+.venv/bin/uvicorn service.semantic_api:app --host 127.0.0.1 --port 8000
+```
+
 ## Resultado de validacao atual
 - A carga da ontologia e dos dados executou com sucesso.
 - As 10 consultas SPARQL da Fase 4 executaram com resultados esperados (catalogadas em `docs/Catalogo_Consultas_Fase_4.md`).
@@ -146,6 +161,11 @@ python scripts/load_and_query.py
   - dataset positivo conforme (`conforms=True`, `violations=0`);
   - dataset negativo com violacoes esperadas (`conforms=False`, `violations=5`);
   - relatorio salvo em `docs/Relatorio_Fase_3_SHACL.md`.
+- A validacao da Fase 5 executou com sucesso:
+  - camada de ingestao de casos ativa (`POST /cases`);
+  - consultas semanticas expostas (`GET /queries`, `GET /queries/{query_name}`);
+  - exportacao de grafo exposta (`GET /export`);
+  - smoke test validado em `scripts/test_api_service.py`.
 
 ## Criterios de aceite
 1. Ontologia consistente no reasoner OWL.
@@ -153,3 +173,14 @@ python scripts/load_and_query.py
 3. Consultas SPARQL respondendo cenarios clinicos essenciais.
 4. Casos de teste com inferencias basicas de diagnostico provavel.
 5. Estrutura pronta para extensao e integracao futura.
+
+## Atualizacao documental (2026-02-10)
+- Status consolidado: Fases 1, 2, 3, 4 e 5 concluidas.
+- Documentacao sincronizada com os artefatos atuais de codigo em `service/`, `scripts/`, `ontology/` e `data/`.
+- Evidencias operacionais mantidas nos documentos de fase e no plano geral:
+  - `docs/Plano_Fase_1_ODSDR.md`
+  - `docs/Plano_Fase_2_ODSDR.md`
+  - `docs/Plano_Fase_3_ODSDR.md`
+  - `docs/Plano_Fase_4_ODSDR.md`
+  - `docs/Plano_Fase_5_ODSDR.md`
+  - `docs/Plano_Implementacao_ODSDR.md`
