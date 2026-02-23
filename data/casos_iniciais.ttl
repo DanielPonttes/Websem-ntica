@@ -9,7 +9,7 @@ odsdr:PacienteJoao a owl:NamedIndividual, odsdr:Paciente ;
     odsdr:idade 67 ;
     odsdr:sexo "M" ;
     odsdr:fumante true ;
-    odsdr:apresenta odsdr:Tosse, odsdr:Febre ;
+    odsdr:apresenta odsdr:Tosse, odsdr:Febre, odsdr:FaltaDeAr, odsdr:Calafrios, odsdr:DorToracica ;
     odsdr:possuiFatorRisco odsdr:Tabagismo, odsdr:IdadeAvancada ;
     odsdr:realiza odsdr:RaioXTorax ;
     odsdr:atendidoPor odsdr:MedicaAna ;
@@ -30,7 +30,7 @@ odsdr:PacienteCarlos a owl:NamedIndividual, odsdr:Paciente ;
     odsdr:idade 42 ;
     odsdr:sexo "M" ;
     odsdr:fumante false ;
-    odsdr:apresenta odsdr:Tosse, odsdr:Febre ;
+    odsdr:apresenta odsdr:Tosse, odsdr:Febre, odsdr:FaltaDeAr, odsdr:DorNoCorpo, odsdr:DorDeCabeca ;
     odsdr:realiza odsdr:PCR ;
     odsdr:atendidoPor odsdr:MedicaAna ;
     odsdr:recebeDiagnostico odsdr:DiagnosticoCarlos ;
@@ -70,7 +70,7 @@ odsdr:PacientePedro a owl:NamedIndividual, odsdr:Paciente ;
     odsdr:idade 72 ;
     odsdr:sexo "M" ;
     odsdr:fumante true ;
-    odsdr:apresenta odsdr:Tosse, odsdr:Febre, odsdr:FaltaDeAr ;
+    odsdr:apresenta odsdr:Tosse, odsdr:Febre, odsdr:FaltaDeAr, odsdr:Calafrios ;
     odsdr:possuiFatorRisco odsdr:Tabagismo, odsdr:IdadeAvancada, odsdr:ComorbidadePulmonar ;
     odsdr:realiza odsdr:RaioXTorax ;
     odsdr:atendidoPor odsdr:MedicaCarla ;
@@ -91,7 +91,7 @@ odsdr:PacienteLucas a owl:NamedIndividual, odsdr:Paciente ;
     odsdr:idade 8 ;
     odsdr:sexo "M" ;
     odsdr:fumante false ;
-    odsdr:apresenta odsdr:Tosse, odsdr:ChiadoNoPeito ;
+    odsdr:apresenta odsdr:Tosse, odsdr:ChiadoNoPeito, odsdr:ExpectoracaoCronica ;
     odsdr:realiza odsdr:Espirometria ;
     odsdr:atendidoPor odsdr:MedicaCarla ;
     odsdr:recebeDiagnostico odsdr:DiagnosticoLucas ;
@@ -112,7 +112,7 @@ odsdr:PacienteRoberto a owl:NamedIndividual, odsdr:Paciente ;
     odsdr:idade 61 ;
     odsdr:sexo "M" ;
     odsdr:fumante true ;
-    odsdr:apresenta odsdr:Tosse, odsdr:Febre, odsdr:FaltaDeAr ;
+    odsdr:apresenta odsdr:Tosse, odsdr:Febre, odsdr:FaltaDeAr, odsdr:DorDeCabeca ;
     odsdr:possuiFatorRisco odsdr:Tabagismo, odsdr:IdadeAvancada ;
     odsdr:realiza odsdr:PCR ;
     odsdr:atendidoPor odsdr:MedicaAna ;
@@ -192,4 +192,107 @@ odsdr:DiagnosticoSofia a owl:NamedIndividual, odsdr:Diagnostico ;
     odsdr:geradoApartirDe odsdr:Espirometria ;
     odsdr:diagnosticaDoenca odsdr:Asma ;
     odsdr:geraTratamento odsdr:Broncodilatador .
+
+## --- Mais Pacientes (Novas Doenças) ---
+
+odsdr:PacienteMarcos a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 45 ;
+    odsdr:sexo "M" ;
+    odsdr:fumante true ;
+    odsdr:apresenta odsdr:Tosse, odsdr:Febre, odsdr:SudoreseNoturna, odsdr:PerdaDePeso, odsdr:Hemoptise ;
+    odsdr:possuiFatorRisco odsdr:Tabagismo ;
+    odsdr:realiza odsdr:RaioXTorax ;
+    odsdr:atendidoPor odsdr:MedicaAna ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoMarcos ;
+    odsdr:pacienteRecebeTratamento odsdr:Antibiotico .
+
+odsdr:PacienteJulia a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 68 ;
+    odsdr:sexo "F" ;
+    odsdr:fumante true ;
+    odsdr:apresenta odsdr:FaltaDeAr, odsdr:Tosse, odsdr:ChiadoNoPeito, odsdr:ExpectoracaoCronica ;
+    odsdr:possuiFatorRisco odsdr:Tabagismo, odsdr:IdadeAvancada ;
+    odsdr:realiza odsdr:Espirometria ;
+    odsdr:atendidoPor odsdr:MedicoBruno ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoJulia ;
+    odsdr:pacienteRecebeTratamento odsdr:Broncodilatador .
+
+odsdr:PacienteTiago a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 12 ;
+    odsdr:sexo "M" ;
+    odsdr:fumante false ;
+    odsdr:apresenta odsdr:Febre, odsdr:Tosse, odsdr:DorDeCabeca, odsdr:DorNoCorpo, odsdr:Calafrios ;
+    odsdr:realiza odsdr:PCR ;
+    odsdr:atendidoPor odsdr:MedicaCarla ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoTiago ;
+    odsdr:pacienteRecebeTratamento odsdr:Hidratacao .
+
+odsdr:PacienteLeticia a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 30 ;
+    odsdr:sexo "F" ;
+    odsdr:fumante false ;
+    odsdr:apresenta odsdr:Febre, odsdr:Tosse, odsdr:DorFacial, odsdr:CongestaoNasal, odsdr:DorDeCabeca ;
+    odsdr:realiza odsdr:RaioXTorax ;
+    odsdr:atendidoPor odsdr:MedicaAna ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoLeticia ;
+    odsdr:pacienteRecebeTratamento odsdr:Antibiotico .
+
+odsdr:PacienteRicardo a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 50 ;
+    odsdr:sexo "M" ;
+    odsdr:fumante true ;
+    odsdr:apresenta odsdr:FaltaDeAr, odsdr:DorToracica, odsdr:Taquicardia ;
+    odsdr:possuiFatorRisco odsdr:Tabagismo ;
+    odsdr:realiza odsdr:RaioXTorax ;
+    odsdr:atendidoPor odsdr:MedicoBruno ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoRicardo ;
+    odsdr:pacienteRecebeTratamento odsdr:Antibiotico .
+
+odsdr:PacienteCamila a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 25 ;
+    odsdr:sexo "F" ;
+    odsdr:fumante false ;
+    odsdr:apresenta odsdr:Tosse, odsdr:Febre, odsdr:Rouquidao, odsdr:DorDeGarganta ;
+    odsdr:realiza odsdr:PCR ;
+    odsdr:atendidoPor odsdr:MedicaCarla ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoCamila ;
+    odsdr:pacienteRecebeTratamento odsdr:Hidratacao .
+
+## --- Diagnosticos para os novos pacientes ---
+
+odsdr:DiagnosticoMarcos a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-23"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:RaioXTorax ;
+    odsdr:diagnosticaDoenca odsdr:Tuberculose ;
+    odsdr:geraTratamento odsdr:Antibiotico .
+
+odsdr:DiagnosticoJulia a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-23"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:Espirometria ;
+    odsdr:diagnosticaDoenca odsdr:DPOC ;
+    odsdr:geraTratamento odsdr:Broncodilatador .
+
+odsdr:DiagnosticoTiago a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-23"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:PCR ;
+    odsdr:diagnosticaDoenca odsdr:Gripe ;
+    odsdr:geraTratamento odsdr:Hidratacao .
+
+odsdr:DiagnosticoLeticia a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-23"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:RaioXTorax ;
+    odsdr:diagnosticaDoenca odsdr:Sinusite ;
+    odsdr:geraTratamento odsdr:Antibiotico .
+
+odsdr:DiagnosticoRicardo a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-23"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:RaioXTorax ;
+    odsdr:diagnosticaDoenca odsdr:EmboliaPulmonar ;
+    odsdr:geraTratamento odsdr:Antibiotico .
+
+odsdr:DiagnosticoCamila a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-23"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:PCR ;
+    odsdr:diagnosticaDoenca odsdr:Laringite ;
+    odsdr:geraTratamento odsdr:Hidratacao .
 

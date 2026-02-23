@@ -1,30 +1,37 @@
 # Relatorio SHACL - Fase 3
 
-Gerado em: 2026-02-23 18:37:58 UTC
+Gerado em: 2026-02-23 20:59:40 UTC
 
 ## Resumo
-- `data/validation/positivo_shacl.ttl`: conforms=True | violations=0
-- `data/validation/negativo_shacl.ttl`: conforms=False | violations=17
+- `data/validation/positivo_shacl.ttl`: conforms=False | violations=1
+- `data/validation/negativo_shacl.ttl`: conforms=False | violations=20
 
 ## Detalhes
 
 ### Dataset: `data/validation/positivo_shacl.ttl`
-- Conforms: `True`
-- Quantidade de violacoes: `0`
-
-```text
-Validation Report
-Conforms: True
-```
-
-### Dataset: `data/validation/negativo_shacl.ttl`
 - Conforms: `False`
-- Quantidade de violacoes: `17`
+- Quantidade de violacoes: `1`
 
 ```text
 Validation Report
 Conforms: False
-Results (17):
+Results (1):
+Constraint Violation in MinCountConstraintComponent (http://www.w3.org/ns/shacl#MinCountConstraintComponent):
+	Severity: sh:Violation
+	Source Shape: [ sh:class odsdr:Anatomia ; sh:minCount Literal("1", datatype=xsd:integer) ; sh:path odsdr:examina ]
+	Focus Node: odsdr:Hemograma
+	Result Path: odsdr:examina
+	Message: Less than 1 values on odsdr:Hemograma->odsdr:examina
+```
+
+### Dataset: `data/validation/negativo_shacl.ttl`
+- Conforms: `False`
+- Quantidade de violacoes: `20`
+
+```text
+Validation Report
+Conforms: False
+Results (20):
 Constraint Violation in DatatypeConstraintComponent (http://www.w3.org/ns/shacl#DatatypeConstraintComponent):
 	Severity: sh:Violation
 	Source Shape: [ sh:datatype xsd:boolean ; sh:minCount Literal("1", datatype=xsd:integer) ; sh:path odsdr:fumante ]
@@ -46,12 +53,25 @@ Constraint Violation in DatatypeConstraintComponent (http://www.w3.org/ns/shacl#
 	Value Node: Literal("trinta", datatype=xsd:string)
 	Result Path: odsdr:idade
 	Message: Value is not Literal with datatype xsd:integer
+Constraint Violation in DatatypeConstraintComponent (http://www.w3.org/ns/shacl#DatatypeConstraintComponent):
+	Severity: sh:Violation
+	Source Shape: [ sh:datatype xsd:string ; sh:minCount Literal("1", datatype=xsd:integer) ; sh:path odsdr:sexo ]
+	Focus Node: odsdr:PacienteSexoInvalido
+	Value Node: Literal("123", datatype=xsd:integer)
+	Result Path: odsdr:sexo
+	Message: Value is not Literal with datatype xsd:string
 Constraint Violation in MinCountConstraintComponent (http://www.w3.org/ns/shacl#MinCountConstraintComponent):
 	Severity: sh:Violation
 	Source Shape: [ sh:class odsdr:Anatomia ; sh:minCount Literal("1", datatype=xsd:integer) ; sh:path odsdr:examina ]
 	Focus Node: odsdr:ExameInvalidoShacl
 	Result Path: odsdr:examina
 	Message: Less than 1 values on odsdr:ExameInvalidoShacl->odsdr:examina
+Constraint Violation in MinCountConstraintComponent (http://www.w3.org/ns/shacl#MinCountConstraintComponent):
+	Severity: sh:Violation
+	Source Shape: [ sh:class odsdr:Anatomia ; sh:minCount Literal("1", datatype=xsd:integer) ; sh:path odsdr:examina ]
+	Focus Node: odsdr:Hemograma
+	Result Path: odsdr:examina
+	Message: Less than 1 values on odsdr:Hemograma->odsdr:examina
 Constraint Violation in MinCountConstraintComponent (http://www.w3.org/ns/shacl#MinCountConstraintComponent):
 	Severity: sh:Violation
 	Source Shape: [ sh:class odsdr:Diagnostico ; sh:minCount Literal("1", datatype=xsd:integer) ; sh:path odsdr:recebeDiagnostico ]
@@ -106,6 +126,12 @@ Constraint Violation in MinCountConstraintComponent (http://www.w3.org/ns/shacl#
 	Focus Node: odsdr:DiagnosticoVazio
 	Result Path: odsdr:geraTratamento
 	Message: Less than 1 values on odsdr:DiagnosticoVazio->odsdr:geraTratamento
+Constraint Violation in MinCountConstraintComponent (http://www.w3.org/ns/shacl#MinCountConstraintComponent):
+	Severity: sh:Violation
+	Source Shape: [ sh:datatype xsd:boolean ; sh:minCount Literal("1", datatype=xsd:integer) ; sh:path odsdr:fumante ]
+	Focus Node: odsdr:PacienteSexoInvalido
+	Result Path: odsdr:fumante
+	Message: Less than 1 values on odsdr:PacienteSexoInvalido->odsdr:fumante
 Constraint Violation in MinCountConstraintComponent (http://www.w3.org/ns/shacl#MinCountConstraintComponent):
 	Severity: sh:Violation
 	Source Shape: [ sh:datatype xsd:boolean ; sh:minCount Literal("1", datatype=xsd:integer) ; sh:path odsdr:fumante ]
