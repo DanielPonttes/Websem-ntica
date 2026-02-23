@@ -5,6 +5,8 @@
 <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-validation-positive/1.0> a owl:Ontology ;
     owl:imports <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/> .
 
+## --- Caso 1: Paciente com COVID-19 (caso original) ---
+
 odsdr:PacienteValidoShacl a owl:NamedIndividual, odsdr:Paciente ;
     odsdr:idade 34 ;
     odsdr:sexo "F" ;
@@ -18,3 +20,69 @@ odsdr:DiagnosticoValidoShacl a owl:NamedIndividual, odsdr:Diagnostico ;
     odsdr:geradoApartirDe odsdr:PCR ;
     odsdr:diagnosticaDoenca odsdr:COVID19 ;
     odsdr:geraTratamento odsdr:Hidratacao .
+
+## --- Caso 2: Idoso fumante com pneumonia ---
+
+odsdr:PacienteValidoPneumonia a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 70 ;
+    odsdr:sexo "M" ;
+    odsdr:fumante true ;
+    odsdr:apresenta odsdr:Tosse, odsdr:Febre ;
+    odsdr:possuiFatorRisco odsdr:Tabagismo, odsdr:IdadeAvancada ;
+    odsdr:realiza odsdr:RaioXTorax ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoValidoPneumonia .
+
+odsdr:DiagnosticoValidoPneumonia a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-12"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:RaioXTorax ;
+    odsdr:diagnosticaDoenca odsdr:Pneumonia ;
+    odsdr:geraTratamento odsdr:Antibiotico .
+
+## --- Caso 3: Jovem com asma ---
+
+odsdr:PacienteValidoAsma a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 19 ;
+    odsdr:sexo "F" ;
+    odsdr:fumante false ;
+    odsdr:apresenta odsdr:FaltaDeAr, odsdr:ChiadoNoPeito ;
+    odsdr:realiza odsdr:Espirometria ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoValidoAsma .
+
+odsdr:DiagnosticoValidoAsma a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-14"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:Espirometria ;
+    odsdr:diagnosticaDoenca odsdr:Asma ;
+    odsdr:geraTratamento odsdr:Broncodilatador .
+
+## --- Caso 4: Crianca com bronquite ---
+
+odsdr:PacienteValidoBronquite a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 6 ;
+    odsdr:sexo "M" ;
+    odsdr:fumante false ;
+    odsdr:apresenta odsdr:Tosse, odsdr:ChiadoNoPeito ;
+    odsdr:realiza odsdr:Espirometria ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoValidoBronquite .
+
+odsdr:DiagnosticoValidoBronquite a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-17"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:Espirometria ;
+    odsdr:diagnosticaDoenca odsdr:Bronquite ;
+    odsdr:geraTratamento odsdr:Broncodilatador .
+
+## --- Caso 5: Paciente com multiplos fatores de risco ---
+
+odsdr:PacienteValidoMultiRisco a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 65 ;
+    odsdr:sexo "M" ;
+    odsdr:fumante true ;
+    odsdr:apresenta odsdr:Tosse, odsdr:Febre, odsdr:FaltaDeAr ;
+    odsdr:possuiFatorRisco odsdr:Tabagismo, odsdr:IdadeAvancada, odsdr:ComorbidadePulmonar ;
+    odsdr:realiza odsdr:RaioXTorax ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoValidoMultiRisco .
+
+odsdr:DiagnosticoValidoMultiRisco a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-20"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:RaioXTorax ;
+    odsdr:diagnosticaDoenca odsdr:Pneumonia ;
+    odsdr:geraTratamento odsdr:Antibiotico .

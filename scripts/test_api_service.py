@@ -13,7 +13,10 @@ from service.semantic_api import CaseIn
 from service.semantic_api import export_graph
 from service.semantic_api import health
 from service.semantic_api import ingest_case
+from service.semantic_api import list_entities
+from service.semantic_api import list_patients
 from service.semantic_api import list_queries
+from service.semantic_api import ontology_summary
 from service.semantic_api import run_query_endpoint
 
 
@@ -58,6 +61,29 @@ def main() -> None:
     assert export_turtle.status_code == 200, export_turtle.body
     assert "@prefix odsdr:" in export_turtle.body.decode("utf-8"), "odsdr prefix missing in turtle export"
     print("export_ok")
+
+    entities = list_entities("doencas")
+    assert entities["count"] >= 4, entities
+    print("entities_doencas_count:", entities["count"])
+
+    entities_sintomas = list_entities("sintomas")
+    assert entities_sintomas["count"] >= 4, entities_sintomas
+    print("entities_sintomas_count:", entities_sintomas["count"])
+
+    patients = list_patients()
+    assert patients["count"] >= 4, patients
+    print("patients_count:", patients["count"])
+    first_patient = patients["patients"][0]
+    assert "id" in first_patient, first_patient
+    assert "sintomas" in first_patient, first_patient
+    print("patients_structure_ok")
+
+    summary = ontology_summary()
+    assert summary["version"] != "unknown", summary
+    assert summary["classes"]["count"] >= 10, summary
+    assert summary["object_properties"]["count"] >= 20, summary
+    print("ontology_summary_version:", summary["version"])
+    print("ontology_summary_classes:", summary["classes"]["count"])
 
     print("API smoke test passed.")
 

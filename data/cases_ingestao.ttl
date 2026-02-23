@@ -41,6 +41,30 @@ odsdr:PacienteApi20260210055615 a odsdr:Paciente,
     odsdr:recebeDiagnostico odsdr:DiagnosticoApi20260210055615 ;
     odsdr:sexo "F" .
 
+odsdr:PacienteApi20260223174257 a odsdr:Paciente,
+        owl:NamedIndividual ;
+    odsdr:apresenta odsdr:Febre,
+        odsdr:Tosse ;
+    odsdr:atendidoPor odsdr:MedicaAna ;
+    odsdr:fumante false ;
+    odsdr:idade 38 ;
+    odsdr:pacienteRecebeTratamento odsdr:Hidratacao ;
+    odsdr:realiza odsdr:PCR ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoApi20260223174257 ;
+    odsdr:sexo "F" .
+
+odsdr:PacienteApi20260223175322 a odsdr:Paciente,
+        owl:NamedIndividual ;
+    odsdr:apresenta odsdr:Febre,
+        odsdr:Tosse ;
+    odsdr:atendidoPor odsdr:MedicaAna ;
+    odsdr:fumante false ;
+    odsdr:idade 38 ;
+    odsdr:pacienteRecebeTratamento odsdr:Hidratacao ;
+    odsdr:realiza odsdr:PCR ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoApi20260223175322 ;
+    odsdr:sexo "F" .
+
 odsdr:PacienteCli20260210054657 a odsdr:Paciente,
         owl:NamedIndividual ;
     odsdr:apresenta odsdr:Febre,
@@ -74,6 +98,20 @@ odsdr:DiagnosticoApi20260210055615 a odsdr:Diagnostico,
     odsdr:geraTratamento odsdr:Hidratacao ;
     odsdr:geradoApartirDe odsdr:PCR .
 
+odsdr:DiagnosticoApi20260223174257 a odsdr:Diagnostico,
+        owl:NamedIndividual ;
+    odsdr:dataDiagnostico "2026-02-23"^^xsd:date ;
+    odsdr:diagnosticaDoenca odsdr:COVID19 ;
+    odsdr:geraTratamento odsdr:Hidratacao ;
+    odsdr:geradoApartirDe odsdr:PCR .
+
+odsdr:DiagnosticoApi20260223175322 a odsdr:Diagnostico,
+        owl:NamedIndividual ;
+    odsdr:dataDiagnostico "2026-02-23"^^xsd:date ;
+    odsdr:diagnosticaDoenca odsdr:COVID19 ;
+    odsdr:geraTratamento odsdr:Hidratacao ;
+    odsdr:geradoApartirDe odsdr:PCR .
+
 odsdr:DiagnosticoCli20260210054657 a odsdr:Diagnostico,
         owl:NamedIndividual ;
     odsdr:dataDiagnostico "2026-02-10"^^xsd:date ;
@@ -84,10 +122,14 @@ odsdr:DiagnosticoCli20260210054657 a odsdr:Diagnostico,
 odsdr:COVID19 odsdr:aflige odsdr:PacienteApi20260210055135,
         odsdr:PacienteApi20260210055449,
         odsdr:PacienteApi20260210055615,
+        odsdr:PacienteApi20260223174257,
+        odsdr:PacienteApi20260223175322,
         odsdr:PacienteCli20260210054657 .
 
 odsdr:MedicaAna odsdr:defineDiagnostico odsdr:DiagnosticoApi20260210055135,
         odsdr:DiagnosticoApi20260210055449,
         odsdr:DiagnosticoApi20260210055615,
+        odsdr:DiagnosticoApi20260223174257,
+        odsdr:DiagnosticoApi20260223175322,
         odsdr:DiagnosticoCli20260210054657 .
 

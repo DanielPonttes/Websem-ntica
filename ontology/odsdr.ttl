@@ -365,4 +365,8 @@ odsdr:Asma
 
 odsdr:Bronquite
     odsdr:provoca odsdr:Tosse, odsdr:ChiadoNoPeito ;
-    odsdr:ataca odsdr:Bronquios .
+    odsdr:ataca odsdr:Bronquios ;
+    odsdr:detectadaPor odsdr:Espirometria ;
+    odsdr:possuiCausa odsdr:InfeccaoViral ;
+    odsdr:facilitadaPor odsdr:Tabagismo ;
+    odsdr:doencaRecebeTratamento odsdr:Broncodilatador .

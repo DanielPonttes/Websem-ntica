@@ -5,6 +5,14 @@
 <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-validation-negative/1.0> a owl:Ontology ;
     owl:imports <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/> .
 
+## --- Caso 1: Paciente sem idade, fumante com tipo errado, exame sem anatomia (caso original expandido) ---
+## Violacoes esperadas:
+##   - PacienteShape: idade ausente (minCount 1)
+##   - PacienteShape: fumante com tipo string ao inves de boolean
+##   - ExameShape: examina ausente (minCount 1)
+##   - DiagnosticoShape: dataDiagnostico com tipo string ao inves de date
+##   - DiagnosticoShape: diagnosticaDoenca ausente (minCount 1)
+
 odsdr:PacienteInvalidoShacl a owl:NamedIndividual, odsdr:Paciente ;
     odsdr:sexo "M" ;
     odsdr:fumante "nao" ;
@@ -19,3 +27,58 @@ odsdr:DiagnosticoInvalidoShacl a owl:NamedIndividual, odsdr:Diagnostico ;
     odsdr:geradoApartirDe odsdr:ExameInvalidoShacl ;
     odsdr:geraTratamento odsdr:Hidratacao ;
     odsdr:dataDiagnostico "10-02-2026"^^xsd:string .
+
+## --- Caso 2: Paciente sem sintomas e sem exame ---
+## Violacoes esperadas:
+##   - PacienteShape: apresenta ausente (minCount 1)
+##   - PacienteShape: realiza ausente (minCount 1)
+##   - PacienteShape: recebeDiagnostico ausente (minCount 1)
+
+odsdr:PacienteSemSintomas a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 40 ;
+    odsdr:sexo "F" ;
+    odsdr:fumante true .
+
+## --- Caso 3: Paciente com sexo e idade de tipos errados ---
+## Violacoes esperadas:
+##   - PacienteShape: idade com tipo string ao inves de integer
+##   - PacienteShape: sexo ausente (pois nao declarado)
+##   - PacienteShape: fumante ausente (pois nao declarado)
+
+odsdr:PacienteTiposErrados a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade "trinta"^^xsd:string ;
+    odsdr:apresenta odsdr:Febre ;
+    odsdr:realiza odsdr:PCR ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoTiposErrados .
+
+odsdr:DiagnosticoTiposErrados a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-15"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:PCR ;
+    odsdr:diagnosticaDoenca odsdr:COVID19 ;
+    odsdr:geraTratamento odsdr:Hidratacao .
+
+## --- Caso 4: Diagnostico totalmente vazio ---
+## Violacoes esperadas:
+##   - DiagnosticoShape: dataDiagnostico ausente (minCount 1)
+##   - DiagnosticoShape: geradoApartirDe ausente (minCount 1)
+##   - DiagnosticoShape: diagnosticaDoenca ausente (minCount 1)
+##   - DiagnosticoShape: geraTratamento ausente (minCount 1)
+
+odsdr:DiagnosticoVazio a owl:NamedIndividual, odsdr:Diagnostico .
+
+## --- Caso 5: Paciente com diagnostico sem doenca e sem tratamento ---
+## Violacoes esperadas:
+##   - DiagnosticoShape: diagnosticaDoenca ausente (minCount 1)
+##   - DiagnosticoShape: geraTratamento ausente (minCount 1)
+
+odsdr:PacienteDiagIncompleto a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 50 ;
+    odsdr:sexo "M" ;
+    odsdr:fumante false ;
+    odsdr:apresenta odsdr:Tosse, odsdr:Febre ;
+    odsdr:realiza odsdr:RaioXTorax ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoIncompleto .
+
+odsdr:DiagnosticoIncompleto a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-22"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:RaioXTorax .

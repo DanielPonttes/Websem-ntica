@@ -7,6 +7,7 @@ from typing import Literal
 
 from fastapi import FastAPI
 from fastapi import HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.responses import PlainTextResponse
 from pydantic import BaseModel
@@ -35,6 +36,14 @@ app = FastAPI(
     title="ODSDR Semantic API",
     version="1.0.0",
     description="API para ingestao de casos clinicos e consultas semanticas ODSDR.",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -253,6 +262,106 @@ def ingest_case(case: CaseIn) -> dict[str, object]:
         "diagnostico": compact_term(diagnostico_uri),
         "ingest_file": str(INGEST_DATA_PATH.relative_to(ROOT)),
         "symptoms_count": len(sintomas_uris),
+    }
+
+
+ENTITY_CLASS_MAP: dict[str, URIRef] = {
+    "sintomas": ODSDR.Sintoma,
+    "exames": ODSDR.Exame,
+    "doencas": ODSDR.Doenca,
+    "tratamentos": ODSDR.Tratamento,
+    "profissionais": ODSDR.ProfissionalSaude,
+    "fatores-risco": ODSDR.FatorRisco,
+    "anatomia": ODSDR.Anatomia,
+    "causas": ODSDR.Causa,
+    "medicamentos": ODSDR.Medicamento,
+}
+
+
+@app.get("/entities/{class_name}")
+def list_entities(class_name: str) -> dict[str, object]:
+    class_uri = ENTITY_CLASS_MAP.get(class_name)
+    if class_uri is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Classe desconhecida: {class_name}. Disponiveis: {sorted(ENTITY_CLASS_MAP.keys())}",
+        )
+    graph = load_graph(include_ingest=True)
+    individuals = sorted(
+        compact_term(s) for s in graph.subjects(RDF.type, class_uri) if isinstance(s, URIRef)
+    )
+    return {"class": class_name, "count": len(individuals), "items": individuals}
+
+
+@app.get("/patients")
+def list_patients() -> dict[str, object]:
+    graph = load_graph(include_ingest=True)
+    patients = []
+    for patient_uri in sorted(graph.subjects(RDF.type, ODSDR.Paciente)):
+        if not isinstance(patient_uri, URIRef):
+            continue
+        idade_val = graph.value(patient_uri, ODSDR.idade)
+        sexo_val = graph.value(patient_uri, ODSDR.sexo)
+        fumante_val = graph.value(patient_uri, ODSDR.fumante)
+        sintomas = sorted(compact_term(o) for o in graph.objects(patient_uri, ODSDR.apresenta))
+        exames = sorted(compact_term(o) for o in graph.objects(patient_uri, ODSDR.realiza))
+        diagnosticos = sorted(compact_term(o) for o in graph.objects(patient_uri, ODSDR.recebeDiagnostico))
+        tratamentos = sorted(compact_term(o) for o in graph.objects(patient_uri, ODSDR.pacienteRecebeTratamento))
+        profissional = graph.value(patient_uri, ODSDR.atendidoPor)
+        fatores = sorted(compact_term(o) for o in graph.objects(patient_uri, ODSDR.possuiFatorRisco))
+
+        doencas = []
+        for diag_uri in graph.objects(patient_uri, ODSDR.recebeDiagnostico):
+            for doenca_uri in graph.objects(diag_uri, ODSDR.diagnosticaDoenca):
+                doencas.append(compact_term(doenca_uri))
+        doencas = sorted(set(doencas))
+
+        patients.append({
+            "id": compact_term(patient_uri),
+            "idade": int(idade_val) if idade_val is not None else None,
+            "sexo": str(sexo_val) if sexo_val is not None else None,
+            "fumante": bool(fumante_val) if fumante_val is not None else None,
+            "sintomas": sintomas,
+            "exames": exames,
+            "diagnosticos": diagnosticos,
+            "doencas": doencas,
+            "tratamentos": tratamentos,
+            "profissional": compact_term(profissional) if profissional else None,
+            "fatores_risco": fatores,
+        })
+    return {"count": len(patients), "patients": patients}
+
+
+@app.get("/ontology/summary")
+def ontology_summary() -> dict[str, object]:
+    graph = load_graph(include_ingest=False)
+    version = read_ontology_version(graph)
+    classes = sorted(
+        compact_term(s)
+        for s in graph.subjects(RDF.type, OWL.Class)
+        if isinstance(s, URIRef) and str(s).startswith(BASE_IRI)
+    )
+    object_props = sorted(
+        compact_term(s)
+        for s in graph.subjects(RDF.type, OWL.ObjectProperty)
+        if isinstance(s, URIRef) and str(s).startswith(BASE_IRI)
+    )
+    data_props = sorted(
+        compact_term(s)
+        for s in graph.subjects(RDF.type, OWL.DatatypeProperty)
+        if isinstance(s, URIRef) and str(s).startswith(BASE_IRI)
+    )
+    individuals = sorted(
+        compact_term(s)
+        for s in graph.subjects(RDF.type, OWL.NamedIndividual)
+        if isinstance(s, URIRef) and str(s).startswith(BASE_IRI)
+    )
+    return {
+        "version": version,
+        "classes": {"count": len(classes), "items": classes},
+        "object_properties": {"count": len(object_props), "items": object_props},
+        "data_properties": {"count": len(data_props), "items": data_props},
+        "individuals": {"count": len(individuals), "items": individuals},
     }
 
 
