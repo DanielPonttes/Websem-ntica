@@ -197,6 +197,7 @@ def run_query_endpoint(
     return JSONResponse(
         {
             "query": query_path.name,
+            "query_text": query_text,
             "columns": columns,
             "rows": rows,
             "row_count": len(rows),
