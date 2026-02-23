@@ -1314,6 +1314,275 @@ ol {
 }
 
 /* ============================================================
+   Inference Result Cards
+   ============================================================ */
+.infer-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.infer-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  transition: all .3s ease;
+  animation: cardSlideIn .4s ease both;
+}
+
+.infer-card:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow);
+}
+
+.infer-card-top {
+  border-color: var(--success);
+  background: linear-gradient(135deg, var(--bg-card), rgba(34, 197, 94, .03));
+  box-shadow: 0 0 20px rgba(34, 197, 94, .1);
+}
+
+.infer-card-top:hover {
+  box-shadow: 0 4px 30px rgba(34, 197, 94, .15);
+}
+
+.infer-card-selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 20px var(--accent-glow);
+}
+
+.infer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.infer-disease {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.infer-emoji {
+  font-size: 1.5rem;
+}
+
+.infer-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.infer-badge-top {
+  font-size: .65rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: var(--success-soft);
+  color: var(--success);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.infer-prob {
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: var(--text-1);
+}
+
+.infer-bar-track {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--bg-input);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.infer-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width .8s cubic-bezier(.4, 0, .2, 1);
+  position: relative;
+}
+
+.infer-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .25), transparent);
+  animation: barShine 2s ease infinite;
+}
+
+.infer-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.infer-detail-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.infer-detail-label {
+  font-size: .7rem;
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  min-width: 180px;
+  flex-shrink: 0;
+  padding-top: 4px;
+}
+
+.infer-detail-value {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.infer-select-btn {
+  margin-top: 4px;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+/* ============================================================
+   Disease Image Cards
+   ============================================================ */
+.disease-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.disease-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all .3s cubic-bezier(.4, 0, .2, 1);
+  animation: cardSlideIn .5s ease both;
+  cursor: default;
+}
+
+.disease-card:hover {
+  border-color: var(--card-color, var(--accent));
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .2), 0 0 20px color-mix(in srgb, var(--card-color, var(--accent)) 25%, transparent);
+}
+
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.disease-img {
+  height: 160px;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(135deg, rgba(0, 0, 0, .3), rgba(0, 0, 0, .1));
+}
+
+.disease-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .5s ease;
+}
+
+.disease-card:hover .disease-img img {
+  transform: scale(1.08);
+}
+
+.disease-img-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--bg-card), var(--accent-soft));
+}
+
+.disease-body {
+  padding: 18px 20px 20px;
+}
+
+.disease-name {
+  font-size: .95rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.disease-desc {
+  font-size: .76rem;
+  color: var(--text-3);
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.disease-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.disease-bar-track {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-input);
+  overflow: hidden;
+}
+
+.disease-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1s cubic-bezier(.4, 0, .2, 1);
+  position: relative;
+}
+
+.disease-bar-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .3), transparent);
+  animation: barShine 2s ease infinite;
+}
+
+@keyframes barShine {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.disease-count {
+  font-size: .7rem;
+  color: var(--text-3);
+  font-weight: 500;
+}
+
+/* ============================================================
    Responsive
    ============================================================ */
 @media (max-width: 900px) {
@@ -1344,6 +1613,10 @@ ol {
 
   .form-row,
   .form-row-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .disease-grid {
     grid-template-columns: 1fr;
   }
 }

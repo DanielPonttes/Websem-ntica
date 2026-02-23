@@ -5,6 +5,10 @@
 <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ingest-data/1.0> a owl:Ontology ;
     owl:imports odsdr: .
 
+odsdr:Bronquite odsdr:aflige odsdr:PacienteNovoPaciente111 .
+
+odsdr:MedicaCarla odsdr:defineDiagnostico odsdr:DiagnosticoNovoPaciente111 .
+
 odsdr:PacienteApi20260210055135 a odsdr:Paciente,
         owl:NamedIndividual ;
     odsdr:apresenta odsdr:Febre,
@@ -101,6 +105,20 @@ odsdr:PacienteCli20260210054657 a odsdr:Paciente,
     odsdr:recebeDiagnostico odsdr:DiagnosticoCli20260210054657 ;
     odsdr:sexo "M" .
 
+odsdr:PacienteNovoPaciente111 a odsdr:Paciente,
+        owl:NamedIndividual ;
+    odsdr:apresenta odsdr:ChiadoNoPeito,
+        odsdr:FaltaDeAr,
+        odsdr:Febre,
+        odsdr:Tosse ;
+    odsdr:atendidoPor odsdr:MedicaCarla ;
+    odsdr:fumante true ;
+    odsdr:idade 15 ;
+    odsdr:pacienteRecebeTratamento odsdr:Hidratacao ;
+    odsdr:realiza odsdr:Espirometria ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoNovoPaciente111 ;
+    odsdr:sexo "F" .
+
 odsdr:DiagnosticoApi20260210055135 a odsdr:Diagnostico,
         owl:NamedIndividual ;
     odsdr:dataDiagnostico "2026-02-10"^^xsd:date ;
@@ -156,6 +174,13 @@ odsdr:DiagnosticoCli20260210054657 a odsdr:Diagnostico,
     odsdr:diagnosticaDoenca odsdr:COVID19 ;
     odsdr:geraTratamento odsdr:Hidratacao ;
     odsdr:geradoApartirDe odsdr:PCR .
+
+odsdr:DiagnosticoNovoPaciente111 a odsdr:Diagnostico,
+        owl:NamedIndividual ;
+    odsdr:dataDiagnostico "2026-02-23"^^xsd:date ;
+    odsdr:diagnosticaDoenca odsdr:Bronquite ;
+    odsdr:geraTratamento odsdr:Hidratacao ;
+    odsdr:geradoApartirDe odsdr:Espirometria .
 
 odsdr:COVID19 odsdr:aflige odsdr:PacienteApi20260210055135,
         odsdr:PacienteApi20260210055449,

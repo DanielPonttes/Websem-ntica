@@ -2,10 +2,10 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-validation-positive/1.0> a owl:Ontology ;
+<http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-validation-positive/2.0> a owl:Ontology ;
     owl:imports <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/> .
 
-## --- Caso 1: Paciente com COVID-19 (caso original) ---
+## --- Caso 1: Paciente com COVID-19 ---
 
 odsdr:PacienteValidoShacl a owl:NamedIndividual, odsdr:Paciente ;
     odsdr:idade 34 ;
@@ -27,7 +27,7 @@ odsdr:PacienteValidoPneumonia a owl:NamedIndividual, odsdr:Paciente ;
     odsdr:idade 70 ;
     odsdr:sexo "M" ;
     odsdr:fumante true ;
-    odsdr:apresenta odsdr:Tosse, odsdr:Febre ;
+    odsdr:apresenta odsdr:Tosse, odsdr:Febre, odsdr:FaltaDeAr ;
     odsdr:possuiFatorRisco odsdr:Tabagismo, odsdr:IdadeAvancada ;
     odsdr:realiza odsdr:RaioXTorax ;
     odsdr:recebeDiagnostico odsdr:DiagnosticoValidoPneumonia .
@@ -70,7 +70,7 @@ odsdr:DiagnosticoValidoBronquite a owl:NamedIndividual, odsdr:Diagnostico ;
     odsdr:diagnosticaDoenca odsdr:Bronquite ;
     odsdr:geraTratamento odsdr:Broncodilatador .
 
-## --- Caso 5: Paciente com multiplos fatores de risco ---
+## --- Caso 5: Paciente multiplos fatores de risco com pneumonia ---
 
 odsdr:PacienteValidoMultiRisco a owl:NamedIndividual, odsdr:Paciente ;
     odsdr:idade 65 ;
@@ -86,3 +86,85 @@ odsdr:DiagnosticoValidoMultiRisco a owl:NamedIndividual, odsdr:Diagnostico ;
     odsdr:geradoApartirDe odsdr:RaioXTorax ;
     odsdr:diagnosticaDoenca odsdr:Pneumonia ;
     odsdr:geraTratamento odsdr:Antibiotico .
+
+## --- Caso 6: Paciente com tuberculose (novo) ---
+
+odsdr:PacienteValidoTB a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 45 ;
+    odsdr:sexo "M" ;
+    odsdr:fumante false ;
+    odsdr:apresenta odsdr:Tosse, odsdr:Febre, odsdr:SudoreseNoturna, odsdr:PerdaDePeso, odsdr:Hemoptise ;
+    odsdr:possuiFatorRisco odsdr:Imunossupressao ;
+    odsdr:realiza odsdr:BaciloscopiaBK ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoValidoTB .
+
+odsdr:DiagnosticoValidoTB a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-21"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:BaciloscopiaBK ;
+    odsdr:diagnosticaDoenca odsdr:Tuberculose ;
+    odsdr:geraTratamento odsdr:Rifampicina .
+
+## --- Caso 7: Paciente fumante com DPOC (novo) ---
+
+odsdr:PacienteValidoDPOC a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 62 ;
+    odsdr:sexo "M" ;
+    odsdr:fumante true ;
+    odsdr:apresenta odsdr:Tosse, odsdr:FaltaDeAr, odsdr:ChiadoNoPeito, odsdr:ExpectoracaoCronica ;
+    odsdr:possuiFatorRisco odsdr:Tabagismo, odsdr:PoluicaoDoAr ;
+    odsdr:realiza odsdr:Espirometria ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoValidoDPOC .
+
+odsdr:DiagnosticoValidoDPOC a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-21"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:Espirometria ;
+    odsdr:diagnosticaDoenca odsdr:DPOC ;
+    odsdr:geraTratamento odsdr:Broncodilatador .
+
+## --- Caso 8: Paciente com gripe (novo) ---
+
+odsdr:PacienteValidoGripe a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 28 ;
+    odsdr:sexo "F" ;
+    odsdr:fumante false ;
+    odsdr:apresenta odsdr:Febre, odsdr:Tosse, odsdr:DorDeCabeca, odsdr:DorNoCorpo, odsdr:Calafrios ;
+    odsdr:realiza odsdr:TesteRapidoInfluenza ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoValidoGripe .
+
+odsdr:DiagnosticoValidoGripe a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-22"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:TesteRapidoInfluenza ;
+    odsdr:diagnosticaDoenca odsdr:Gripe ;
+    odsdr:geraTratamento odsdr:Oseltamivir .
+
+## --- Caso 9: Paciente com sinusite (novo) ---
+
+odsdr:PacienteValidoSinusite a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 35 ;
+    odsdr:sexo "F" ;
+    odsdr:fumante false ;
+    odsdr:apresenta odsdr:DorFacial, odsdr:CongestaoNasal, odsdr:DorDeCabeca, odsdr:Febre ;
+    odsdr:realiza odsdr:TomografiaDosSeios ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoValidoSinusite .
+
+odsdr:DiagnosticoValidoSinusite a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-22"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:TomografiaDosSeios ;
+    odsdr:diagnosticaDoenca odsdr:Sinusite ;
+    odsdr:geraTratamento odsdr:Antibiotico .
+
+## --- Caso 10: Paciente com embolia pulmonar (novo) ---
+
+odsdr:PacienteValidoEmbolia a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 55 ;
+    odsdr:sexo "M" ;
+    odsdr:fumante false ;
+    odsdr:apresenta odsdr:FaltaDeAr, odsdr:DorToracica, odsdr:Taquicardia ;
+    odsdr:realiza odsdr:AngiotomografiaPulmonar ;
+    odsdr:recebeDiagnostico odsdr:DiagnosticoValidoEmbolia .
+
+odsdr:DiagnosticoValidoEmbolia a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-23"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:AngiotomografiaPulmonar ;
+    odsdr:diagnosticaDoenca odsdr:EmboliaPulmonar ;
+    odsdr:geraTratamento odsdr:Anticoagulante .

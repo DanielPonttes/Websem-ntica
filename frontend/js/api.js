@@ -34,5 +34,7 @@ const API = (() => {
             body: JSON.stringify(data),
         }),
         exportGraph: (fmt = 'turtle') => request(`/export?format=${fmt}`),
+        infer: (sintomas, fumante = false, idade = 0) =>
+            request(`/infer?sintomas=${encodeURIComponent(sintomas)}&fumante=${fumante}&idade=${idade}`),
     };
 })();

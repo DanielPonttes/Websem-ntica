@@ -5,9 +5,13 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/> a owl:Ontology ;
-    owl:versionInfo "1.2.0" ;
+    owl:versionInfo "2.0.0" ;
     rdfs:label "ODSDR"@pt-BR ;
-    rdfs:comment "Ontologia ODSDR em OWL 2 DL serializada em Turtle."@pt-BR .
+    rdfs:comment "Ontologia ODSDR em OWL 2 DL — 10 doencas respiratorias, 17 sintomas. Fontes: OMS ICD-11, Harrison 21ed, GOLD 2024, GINA 2024."@pt-BR .
+
+# ============================================================
+# CLASSES (TBox)
+# ============================================================
 
 odsdr:Doenca a owl:Class ;
     rdfs:label "Doenca"@pt-BR ;
@@ -54,9 +58,13 @@ odsdr:Causa a owl:Class ;
     rdfs:label "Causa"@pt-BR ;
     rdfs:comment "Fator etiologico associado a uma doenca."@pt-BR .
 
+# ============================================================
+# CLASSES DEFINIDAS — Caso Provavel (inferencia OWL)
+# ============================================================
+
 odsdr:CasoProvavelPneumonia a owl:Class ;
     rdfs:label "Caso provavel de pneumonia"@pt-BR ;
-    rdfs:comment "Paciente com tosse, febre e realizacao de raio X de torax."@pt-BR ;
+    rdfs:comment "Paciente com tosse, febre e raio X de torax."@pt-BR ;
     owl:equivalentClass [
         a owl:Class ;
         owl:intersectionOf (
@@ -106,6 +114,91 @@ odsdr:CasoProvavelCOVID19 a owl:Class ;
         )
     ] .
 
+odsdr:CasoProvavelTuberculose a owl:Class ;
+    rdfs:label "Caso provavel de tuberculose"@pt-BR ;
+    rdfs:comment "Paciente com tosse, sudorese noturna e baciloscopia BK. Fonte: OMS/ICD-11 1B10."@pt-BR ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            odsdr:Paciente
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:Tosse ]
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:SudoreseNoturna ]
+            [ a owl:Restriction ; owl:onProperty odsdr:realiza ; owl:hasValue odsdr:BaciloscopiaBK ]
+        )
+    ] .
+
+odsdr:CasoProvavelDPOC a owl:Class ;
+    rdfs:label "Caso provavel de DPOC"@pt-BR ;
+    rdfs:comment "Paciente com tosse, falta de ar e expectoracao cronica. Fonte: GOLD 2024."@pt-BR ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            odsdr:Paciente
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:Tosse ]
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:FaltaDeAr ]
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:ExpectoracaoCronica ]
+            [ a owl:Restriction ; owl:onProperty odsdr:realiza ; owl:hasValue odsdr:Espirometria ]
+        )
+    ] .
+
+odsdr:CasoProvavelGripe a owl:Class ;
+    rdfs:label "Caso provavel de gripe"@pt-BR ;
+    rdfs:comment "Paciente com febre, tosse, dor no corpo e teste rapido. Fonte: OMS/ICD-11 1E30."@pt-BR ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            odsdr:Paciente
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:Febre ]
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:Tosse ]
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:DorNoCorpo ]
+            [ a owl:Restriction ; owl:onProperty odsdr:realiza ; owl:hasValue odsdr:TesteRapidoInfluenza ]
+        )
+    ] .
+
+odsdr:CasoProvavelSinusite a owl:Class ;
+    rdfs:label "Caso provavel de sinusite"@pt-BR ;
+    rdfs:comment "Paciente com dor facial, congestao nasal e tomografia. Fonte: Harrison 21ed."@pt-BR ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            odsdr:Paciente
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:DorFacial ]
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:CongestaoNasal ]
+            [ a owl:Restriction ; owl:onProperty odsdr:realiza ; owl:hasValue odsdr:TomografiaDosSeios ]
+        )
+    ] .
+
+odsdr:CasoProvavelEmboliaPulmonar a owl:Class ;
+    rdfs:label "Caso provavel de embolia pulmonar"@pt-BR ;
+    rdfs:comment "Paciente com falta de ar, dor toracica e taquicardia. Fonte: Harrison 21ed."@pt-BR ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            odsdr:Paciente
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:FaltaDeAr ]
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:DorToracica ]
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:Taquicardia ]
+            [ a owl:Restriction ; owl:onProperty odsdr:realiza ; owl:hasValue odsdr:AngiotomografiaPulmonar ]
+        )
+    ] .
+
+odsdr:CasoProvavelLaringite a owl:Class ;
+    rdfs:label "Caso provavel de laringite"@pt-BR ;
+    rdfs:comment "Paciente com rouquidao, dor de garganta e laringoscopia. Fonte: OMS/ICD-11 CA04."@pt-BR ;
+    owl:equivalentClass [
+        a owl:Class ;
+        owl:intersectionOf (
+            odsdr:Paciente
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:Rouquidao ]
+            [ a owl:Restriction ; owl:onProperty odsdr:apresenta ; owl:hasValue odsdr:DorDeGarganta ]
+            [ a owl:Restriction ; owl:onProperty odsdr:realiza ; owl:hasValue odsdr:LaringoscopiaIndireta ]
+        )
+    ] .
+
+# ============================================================
+# DISJOINTNESS
+# ============================================================
+
 [] a owl:AllDisjointClasses ;
     owl:members (
         odsdr:Doenca
@@ -120,6 +213,10 @@ odsdr:CasoProvavelCOVID19 a owl:Class ;
         odsdr:Causa
     ) .
 
+# ============================================================
+# OBJECT PROPERTIES
+# ============================================================
+
 odsdr:provoca a owl:ObjectProperty ;
     rdfs:label "provoca"@pt-BR ;
     rdfs:comment "Relaciona uma doenca aos sintomas que ela provoca."@pt-BR ;
@@ -129,160 +226,118 @@ odsdr:provoca a owl:ObjectProperty ;
 
 odsdr:eSintomaDe a owl:ObjectProperty ;
     rdfs:label "e sintoma de"@pt-BR ;
-    rdfs:comment "Relaciona um sintoma as doencas associadas."@pt-BR ;
     rdfs:domain odsdr:Sintoma ;
     rdfs:range odsdr:Doenca .
 
 odsdr:possuiCausa a owl:ObjectProperty ;
     rdfs:label "possui causa"@pt-BR ;
-    rdfs:comment "Relaciona doenca a causa etiologica."@pt-BR ;
     rdfs:domain odsdr:Doenca ;
     rdfs:range odsdr:Causa .
 
 odsdr:aflige a owl:ObjectProperty ;
     rdfs:label "aflige"@pt-BR ;
-    rdfs:comment "Relaciona doenca a paciente afetado."@pt-BR ;
     rdfs:domain odsdr:Doenca ;
     rdfs:range odsdr:Paciente .
 
 odsdr:diagnosticadaPor a owl:ObjectProperty ;
     rdfs:label "diagnosticada por"@pt-BR ;
-    rdfs:comment "Relaciona doenca ao profissional que a diagnostica."@pt-BR ;
     rdfs:domain odsdr:Doenca ;
     rdfs:range odsdr:ProfissionalSaude .
 
 odsdr:doencaRecebeTratamento a owl:ObjectProperty ;
     rdfs:label "doenca recebe tratamento"@pt-BR ;
-    rdfs:comment "Relaciona doenca ao tratamento indicado para ela."@pt-BR ;
     rdfs:domain odsdr:Doenca ;
     rdfs:range odsdr:Tratamento .
 
 odsdr:detectadaPor a owl:ObjectProperty ;
     rdfs:label "detectada por"@pt-BR ;
-    rdfs:comment "Relaciona doenca ao exame que permite detecta-la."@pt-BR ;
     rdfs:domain odsdr:Doenca ;
     rdfs:range odsdr:Exame ;
     owl:inverseOf odsdr:detectaDoenca .
 
 odsdr:detectaDoenca a owl:ObjectProperty ;
     rdfs:label "detecta doenca"@pt-BR ;
-    rdfs:comment "Relaciona exame as doencas detectadas."@pt-BR ;
     rdfs:domain odsdr:Exame ;
     rdfs:range odsdr:Doenca .
 
 odsdr:ataca a owl:ObjectProperty ;
     rdfs:label "ataca"@pt-BR ;
-    rdfs:comment "Relaciona doenca a estrutura anatomica afetada."@pt-BR ;
     rdfs:domain odsdr:Doenca ;
     rdfs:range odsdr:Anatomia .
 
 odsdr:facilitadaPor a owl:ObjectProperty ;
     rdfs:label "facilitada por"@pt-BR ;
-    rdfs:comment "Relaciona doenca aos fatores que favorecem sua ocorrencia."@pt-BR ;
     rdfs:domain odsdr:Doenca ;
     rdfs:range odsdr:FatorRisco .
 
 odsdr:apresenta a owl:ObjectProperty ;
     rdfs:label "apresenta"@pt-BR ;
-    rdfs:comment "Relaciona paciente aos sintomas apresentados."@pt-BR ;
     rdfs:domain odsdr:Paciente ;
     rdfs:range odsdr:Sintoma .
 
 odsdr:atendidoPor a owl:ObjectProperty ;
     rdfs:label "atendido por"@pt-BR ;
-    rdfs:comment "Relaciona paciente ao profissional que realiza atendimento."@pt-BR ;
     rdfs:domain odsdr:Paciente ;
     rdfs:range odsdr:ProfissionalSaude .
 
 odsdr:recebeDiagnostico a owl:ObjectProperty ;
     rdfs:label "recebe diagnostico"@pt-BR ;
-    rdfs:comment "Relaciona paciente ao diagnostico registrado."@pt-BR ;
     rdfs:domain odsdr:Paciente ;
     rdfs:range odsdr:Diagnostico .
 
-odsdr:pacienteRecebeTratamento a owl:ObjectProperty ;
-    rdfs:label "paciente recebe tratamento"@pt-BR ;
-    rdfs:comment "Relaciona paciente ao tratamento recebido."@pt-BR ;
-    rdfs:domain odsdr:Paciente ;
-    rdfs:range odsdr:Tratamento .
-
 odsdr:realiza a owl:ObjectProperty ;
     rdfs:label "realiza"@pt-BR ;
-    rdfs:comment "Relaciona paciente aos exames realizados."@pt-BR ;
     rdfs:domain odsdr:Paciente ;
     rdfs:range odsdr:Exame .
 
 odsdr:possuiFatorRisco a owl:ObjectProperty ;
     rdfs:label "possui fator de risco"@pt-BR ;
-    rdfs:comment "Relaciona paciente aos fatores de risco presentes."@pt-BR ;
     rdfs:domain odsdr:Paciente ;
     rdfs:range odsdr:FatorRisco .
 
-odsdr:defineDiagnostico a owl:ObjectProperty ;
-    rdfs:label "define diagnostico"@pt-BR ;
-    rdfs:comment "Relaciona profissional ao diagnostico definido."@pt-BR ;
-    rdfs:domain odsdr:ProfissionalSaude ;
-    rdfs:range odsdr:Diagnostico .
-
-odsdr:analisaSintoma a owl:ObjectProperty ;
-    rdfs:label "analisa sintoma"@pt-BR ;
-    rdfs:comment "Relaciona profissional aos sintomas analisados."@pt-BR ;
-    rdfs:domain odsdr:ProfissionalSaude ;
-    rdfs:range odsdr:Sintoma .
-
-odsdr:prescreveTratamento a owl:ObjectProperty ;
-    rdfs:label "prescreve tratamento"@pt-BR ;
-    rdfs:comment "Relaciona profissional ao tratamento prescrito."@pt-BR ;
-    rdfs:domain odsdr:ProfissionalSaude ;
+odsdr:pacienteRecebeTratamento a owl:ObjectProperty ;
+    rdfs:label "paciente recebe tratamento"@pt-BR ;
+    rdfs:domain odsdr:Paciente ;
     rdfs:range odsdr:Tratamento .
 
-odsdr:solicitaExame a owl:ObjectProperty ;
-    rdfs:label "solicita exame"@pt-BR ;
-    rdfs:comment "Relaciona profissional aos exames solicitados."@pt-BR ;
-    rdfs:domain odsdr:ProfissionalSaude ;
+odsdr:diagnosticaDoenca a owl:ObjectProperty ;
+    rdfs:label "diagnostica doenca"@pt-BR ;
+    rdfs:domain odsdr:Diagnostico ;
+    rdfs:range odsdr:Doenca .
+
+odsdr:geradoApartirDe a owl:ObjectProperty ;
+    rdfs:label "gerado a partir de"@pt-BR ;
+    rdfs:domain odsdr:Diagnostico ;
     rdfs:range odsdr:Exame .
 
 odsdr:geraTratamento a owl:ObjectProperty ;
     rdfs:label "gera tratamento"@pt-BR ;
-    rdfs:comment "Relaciona diagnostico ao tratamento recomendado."@pt-BR ;
     rdfs:domain odsdr:Diagnostico ;
     rdfs:range odsdr:Tratamento .
 
-odsdr:geradoApartirDe a owl:ObjectProperty ;
-    rdfs:label "gerado a partir de"@pt-BR ;
-    rdfs:comment "Relaciona diagnostico aos exames utilizados na decisao."@pt-BR ;
-    rdfs:domain odsdr:Diagnostico ;
-    rdfs:range odsdr:Exame .
-
-odsdr:diagnosticaDoenca a owl:ObjectProperty ;
-    rdfs:label "diagnostica doenca"@pt-BR ;
-    rdfs:comment "Relaciona diagnostico a doenca concluida."@pt-BR ;
-    rdfs:domain odsdr:Diagnostico ;
-    rdfs:range odsdr:Doenca .
-
 odsdr:aliviadoPor a owl:ObjectProperty ;
     rdfs:label "aliviado por"@pt-BR ;
-    rdfs:comment "Relaciona sintoma a tratamento que o alivia."@pt-BR ;
     rdfs:domain odsdr:Sintoma ;
     rdfs:range odsdr:Tratamento .
 
 odsdr:examina a owl:ObjectProperty ;
     rdfs:label "examina"@pt-BR ;
-    rdfs:comment "Relaciona exame a estrutura anatomica examinada."@pt-BR ;
     rdfs:domain odsdr:Exame ;
     rdfs:range odsdr:Anatomia .
 
 odsdr:predispoe a owl:ObjectProperty ;
     rdfs:label "predispoe"@pt-BR ;
-    rdfs:comment "Relaciona causa a fator de risco predisponente."@pt-BR ;
     rdfs:domain odsdr:Causa ;
     rdfs:range odsdr:FatorRisco .
 
 odsdr:aumentaRiscoPara a owl:ObjectProperty ;
     rdfs:label "aumenta risco para"@pt-BR ;
-    rdfs:comment "Relaciona fator de risco as doencas cujo risco e ampliado."@pt-BR ;
     rdfs:domain odsdr:FatorRisco ;
     rdfs:range odsdr:Doenca .
+
+# ============================================================
+# DATATYPE PROPERTIES
+# ============================================================
 
 odsdr:idade a owl:DatatypeProperty ;
     rdfs:domain odsdr:Paciente ;
@@ -308,65 +363,209 @@ odsdr:resultadoPositivo a owl:DatatypeProperty ;
     rdfs:domain odsdr:Exame ;
     rdfs:range xsd:boolean .
 
-odsdr:Asma a owl:NamedIndividual, odsdr:Doenca .
-odsdr:Bronquite a owl:NamedIndividual, odsdr:Doenca .
-odsdr:Pneumonia a owl:NamedIndividual, odsdr:Doenca .
-odsdr:COVID19 a owl:NamedIndividual, odsdr:Doenca .
+# ============================================================
+# DOENCAS (10) — Fontes: OMS ICD-11, Harrison 21ed, GOLD 2024
+# ============================================================
+
+odsdr:Asma a owl:NamedIndividual, odsdr:Doenca ;
+    rdfs:comment "ICD-11 CA23. Fonte: GINA 2024."@pt-BR .
+odsdr:Bronquite a owl:NamedIndividual, odsdr:Doenca ;
+    rdfs:comment "ICD-11 CA20. Fonte: Harrison 21ed."@pt-BR .
+odsdr:Pneumonia a owl:NamedIndividual, odsdr:Doenca ;
+    rdfs:comment "ICD-11 CA40. Fonte: Harrison 21ed."@pt-BR .
+odsdr:COVID19 a owl:NamedIndividual, odsdr:Doenca ;
+    rdfs:comment "ICD-11 RA01.0. Fonte: OMS 2024."@pt-BR .
+odsdr:Tuberculose a owl:NamedIndividual, odsdr:Doenca ;
+    rdfs:comment "ICD-11 1B10. Fonte: OMS Global TB Report 2024."@pt-BR .
+odsdr:DPOC a owl:NamedIndividual, odsdr:Doenca ;
+    rdfs:comment "ICD-11 CA22. Fonte: GOLD 2024."@pt-BR .
+odsdr:Gripe a owl:NamedIndividual, odsdr:Doenca ;
+    rdfs:comment "ICD-11 1E30. Fonte: OMS."@pt-BR .
+odsdr:Sinusite a owl:NamedIndividual, odsdr:Doenca ;
+    rdfs:comment "ICD-11 CA0A. Fonte: Harrison 21ed."@pt-BR .
+odsdr:EmboliaPulmonar a owl:NamedIndividual, odsdr:Doenca ;
+    rdfs:comment "ICD-11 BB00. Fonte: Harrison 21ed."@pt-BR .
+odsdr:Laringite a owl:NamedIndividual, odsdr:Doenca ;
+    rdfs:comment "ICD-11 CA04. Fonte: Harrison 21ed."@pt-BR .
+
+# ============================================================
+# SINTOMAS (17)
+# ============================================================
 
 odsdr:Tosse a owl:NamedIndividual, odsdr:Sintoma .
 odsdr:Febre a owl:NamedIndividual, odsdr:Sintoma .
 odsdr:FaltaDeAr a owl:NamedIndividual, odsdr:Sintoma .
 odsdr:ChiadoNoPeito a owl:NamedIndividual, odsdr:Sintoma .
+odsdr:SudoreseNoturna a owl:NamedIndividual, odsdr:Sintoma .
+odsdr:PerdaDePeso a owl:NamedIndividual, odsdr:Sintoma .
+odsdr:Hemoptise a owl:NamedIndividual, odsdr:Sintoma ;
+    rdfs:comment "Expectoracao com sangue."@pt-BR .
+odsdr:ExpectoracaoCronica a owl:NamedIndividual, odsdr:Sintoma ;
+    rdfs:comment "Producao persistente de secrecao bronquica."@pt-BR .
+odsdr:DorDeCabeca a owl:NamedIndividual, odsdr:Sintoma .
+odsdr:DorNoCorpo a owl:NamedIndividual, odsdr:Sintoma ;
+    rdfs:comment "Mialgia generalizada."@pt-BR .
+odsdr:Calafrios a owl:NamedIndividual, odsdr:Sintoma .
+odsdr:DorFacial a owl:NamedIndividual, odsdr:Sintoma ;
+    rdfs:comment "Dor na regiao dos seios paranasais."@pt-BR .
+odsdr:CongestaoNasal a owl:NamedIndividual, odsdr:Sintoma .
+odsdr:DorToracica a owl:NamedIndividual, odsdr:Sintoma ;
+    rdfs:comment "Dor toracica, pode ser pleuritica."@pt-BR .
+odsdr:Taquicardia a owl:NamedIndividual, odsdr:Sintoma ;
+    rdfs:comment "FC > 100 bpm."@pt-BR .
+odsdr:Rouquidao a owl:NamedIndividual, odsdr:Sintoma ;
+    rdfs:comment "Disfonia."@pt-BR .
+odsdr:DorDeGarganta a owl:NamedIndividual, odsdr:Sintoma .
+
+# ============================================================
+# EXAMES (9)
+# ============================================================
 
 odsdr:RaioXTorax a owl:NamedIndividual, odsdr:Exame ;
     odsdr:examina odsdr:Pulmoes .
-
 odsdr:PCR a owl:NamedIndividual, odsdr:Exame ;
     odsdr:examina odsdr:Pulmoes .
-
 odsdr:Espirometria a owl:NamedIndividual, odsdr:Exame ;
     odsdr:examina odsdr:Bronquios .
+odsdr:BaciloscopiaBK a owl:NamedIndividual, odsdr:Exame ;
+    rdfs:comment "Pesquisa de BAAR no escarro. Fonte: OMS."@pt-BR ;
+    odsdr:examina odsdr:Pulmoes .
+odsdr:TesteRapidoInfluenza a owl:NamedIndividual, odsdr:Exame ;
+    rdfs:comment "Teste de antigeno para Influenza A/B."@pt-BR ;
+    odsdr:examina odsdr:Pulmoes .
+odsdr:TomografiaDosSeios a owl:NamedIndividual, odsdr:Exame ;
+    rdfs:comment "TC dos seios paranasais."@pt-BR ;
+    odsdr:examina odsdr:SeiosParanasais .
+odsdr:AngiotomografiaPulmonar a owl:NamedIndividual, odsdr:Exame ;
+    rdfs:comment "Angiotomografia para TEP."@pt-BR ;
+    odsdr:examina odsdr:Pulmoes .
+odsdr:LaringoscopiaIndireta a owl:NamedIndividual, odsdr:Exame ;
+    rdfs:comment "Espelho laringeo."@pt-BR ;
+    odsdr:examina odsdr:Laringe .
+odsdr:Hemograma a owl:NamedIndividual, odsdr:Exame ;
+    rdfs:comment "Hemograma completo."@pt-BR .
+
+# ============================================================
+# TRATAMENTOS (7)
+# ============================================================
 
 odsdr:Antibiotico a owl:NamedIndividual, odsdr:Tratamento .
 odsdr:Broncodilatador a owl:NamedIndividual, odsdr:Medicamento .
 odsdr:Hidratacao a owl:NamedIndividual, odsdr:Tratamento .
+odsdr:Rifampicina a owl:NamedIndividual, odsdr:Medicamento ;
+    rdfs:comment "1a linha para TB. Fonte: OMS."@pt-BR .
+odsdr:Oseltamivir a owl:NamedIndividual, odsdr:Medicamento ;
+    rdfs:comment "Antiviral para Influenza."@pt-BR .
+odsdr:Anticoagulante a owl:NamedIndividual, odsdr:Medicamento ;
+    rdfs:comment "Heparina/Enoxaparina para TEP."@pt-BR .
+odsdr:AntiInflamatorio a owl:NamedIndividual, odsdr:Medicamento ;
+    rdfs:comment "Anti-inflamatorio para laringite."@pt-BR .
+
+# ============================================================
+# FATORES DE RISCO (5)
+# ============================================================
 
 odsdr:Tabagismo a owl:NamedIndividual, odsdr:FatorRisco .
 odsdr:IdadeAvancada a owl:NamedIndividual, odsdr:FatorRisco .
 odsdr:ComorbidadePulmonar a owl:NamedIndividual, odsdr:FatorRisco .
+odsdr:Imunossupressao a owl:NamedIndividual, odsdr:FatorRisco ;
+    rdfs:comment "Sistema imunologico comprometido."@pt-BR .
+odsdr:PoluicaoDoAr a owl:NamedIndividual, odsdr:FatorRisco ;
+    rdfs:comment "Exposicao a poluentes. Fonte: GOLD 2024."@pt-BR .
+
+# ============================================================
+# ANATOMIA (4) / CAUSAS (4) / PROFISSIONAIS
+# ============================================================
 
 odsdr:Pulmoes a owl:NamedIndividual, odsdr:Anatomia .
 odsdr:Bronquios a owl:NamedIndividual, odsdr:Anatomia .
+odsdr:SeiosParanasais a owl:NamedIndividual, odsdr:Anatomia .
+odsdr:Laringe a owl:NamedIndividual, odsdr:Anatomia .
 
 odsdr:InfeccaoBacteriana a owl:NamedIndividual, odsdr:Causa .
 odsdr:InfeccaoViral a owl:NamedIndividual, odsdr:Causa .
+odsdr:Alergeno a owl:NamedIndividual, odsdr:Causa .
+odsdr:Tromboembolismo a owl:NamedIndividual, odsdr:Causa .
+
+odsdr:MedicaAna a owl:NamedIndividual, odsdr:ProfissionalSaude .
+odsdr:MedicoBruno a owl:NamedIndividual, odsdr:ProfissionalSaude .
+odsdr:MedicaCarla a owl:NamedIndividual, odsdr:ProfissionalSaude .
+
+# ============================================================
+# RELACOES DOENCA → SINTOMAS / EXAMES / TRATAMENTOS
+# ============================================================
 
 odsdr:Pneumonia
-    odsdr:provoca odsdr:Tosse, odsdr:Febre, odsdr:FaltaDeAr ;
-    odsdr:detectadaPor odsdr:RaioXTorax ;
+    odsdr:provoca odsdr:Tosse, odsdr:Febre, odsdr:FaltaDeAr, odsdr:Calafrios, odsdr:DorToracica ;
+    odsdr:detectadaPor odsdr:RaioXTorax, odsdr:Hemograma ;
     odsdr:ataca odsdr:Pulmoes ;
     odsdr:possuiCausa odsdr:InfeccaoBacteriana ;
-    odsdr:facilitadaPor odsdr:Tabagismo, odsdr:IdadeAvancada ;
+    odsdr:facilitadaPor odsdr:Tabagismo, odsdr:IdadeAvancada, odsdr:Imunossupressao ;
     odsdr:doencaRecebeTratamento odsdr:Antibiotico .
 
 odsdr:COVID19
-    odsdr:provoca odsdr:Tosse, odsdr:Febre, odsdr:FaltaDeAr ;
+    odsdr:provoca odsdr:Tosse, odsdr:Febre, odsdr:FaltaDeAr, odsdr:DorNoCorpo, odsdr:DorDeCabeca ;
     odsdr:detectadaPor odsdr:PCR ;
     odsdr:ataca odsdr:Pulmoes ;
     odsdr:possuiCausa odsdr:InfeccaoViral ;
-    odsdr:facilitadaPor odsdr:ComorbidadePulmonar ;
+    odsdr:facilitadaPor odsdr:ComorbidadePulmonar, odsdr:IdadeAvancada ;
     odsdr:doencaRecebeTratamento odsdr:Hidratacao .
 
 odsdr:Asma
-    odsdr:provoca odsdr:FaltaDeAr, odsdr:ChiadoNoPeito ;
+    odsdr:provoca odsdr:FaltaDeAr, odsdr:ChiadoNoPeito, odsdr:Tosse ;
     odsdr:detectadaPor odsdr:Espirometria ;
     odsdr:ataca odsdr:Bronquios ;
+    odsdr:possuiCausa odsdr:Alergeno ;
     odsdr:doencaRecebeTratamento odsdr:Broncodilatador .
 
 odsdr:Bronquite
-    odsdr:provoca odsdr:Tosse, odsdr:ChiadoNoPeito ;
-    odsdr:ataca odsdr:Bronquios ;
+    odsdr:provoca odsdr:Tosse, odsdr:ChiadoNoPeito, odsdr:ExpectoracaoCronica ;
     odsdr:detectadaPor odsdr:Espirometria ;
+    odsdr:ataca odsdr:Bronquios ;
     odsdr:possuiCausa odsdr:InfeccaoViral ;
-    odsdr:facilitadaPor odsdr:Tabagismo ;
+    odsdr:facilitadaPor odsdr:Tabagismo, odsdr:PoluicaoDoAr ;
     odsdr:doencaRecebeTratamento odsdr:Broncodilatador .
+
+odsdr:Tuberculose
+    odsdr:provoca odsdr:Tosse, odsdr:Febre, odsdr:SudoreseNoturna, odsdr:PerdaDePeso, odsdr:Hemoptise ;
+    odsdr:detectadaPor odsdr:BaciloscopiaBK, odsdr:RaioXTorax ;
+    odsdr:ataca odsdr:Pulmoes ;
+    odsdr:possuiCausa odsdr:InfeccaoBacteriana ;
+    odsdr:facilitadaPor odsdr:Imunossupressao ;
+    odsdr:doencaRecebeTratamento odsdr:Rifampicina .
+
+odsdr:DPOC
+    odsdr:provoca odsdr:Tosse, odsdr:FaltaDeAr, odsdr:ChiadoNoPeito, odsdr:ExpectoracaoCronica ;
+    odsdr:detectadaPor odsdr:Espirometria ;
+    odsdr:ataca odsdr:Bronquios, odsdr:Pulmoes ;
+    odsdr:facilitadaPor odsdr:Tabagismo, odsdr:PoluicaoDoAr ;
+    odsdr:doencaRecebeTratamento odsdr:Broncodilatador .
+
+odsdr:Gripe
+    odsdr:provoca odsdr:Febre, odsdr:Tosse, odsdr:DorDeCabeca, odsdr:DorNoCorpo, odsdr:Calafrios ;
+    odsdr:detectadaPor odsdr:TesteRapidoInfluenza ;
+    odsdr:ataca odsdr:Pulmoes ;
+    odsdr:possuiCausa odsdr:InfeccaoViral ;
+    odsdr:facilitadaPor odsdr:IdadeAvancada, odsdr:Imunossupressao ;
+    odsdr:doencaRecebeTratamento odsdr:Oseltamivir .
+
+odsdr:Sinusite
+    odsdr:provoca odsdr:DorFacial, odsdr:CongestaoNasal, odsdr:DorDeCabeca, odsdr:Febre ;
+    odsdr:detectadaPor odsdr:TomografiaDosSeios ;
+    odsdr:ataca odsdr:SeiosParanasais ;
+    odsdr:possuiCausa odsdr:InfeccaoBacteriana ;
+    odsdr:doencaRecebeTratamento odsdr:Antibiotico .
+
+odsdr:EmboliaPulmonar
+    odsdr:provoca odsdr:FaltaDeAr, odsdr:DorToracica, odsdr:Taquicardia ;
+    odsdr:detectadaPor odsdr:AngiotomografiaPulmonar ;
+    odsdr:ataca odsdr:Pulmoes ;
+    odsdr:possuiCausa odsdr:Tromboembolismo ;
+    odsdr:doencaRecebeTratamento odsdr:Anticoagulante .
+
+odsdr:Laringite
+    odsdr:provoca odsdr:Rouquidao, odsdr:DorDeGarganta, odsdr:Tosse ;
+    odsdr:detectadaPor odsdr:LaringoscopiaIndireta ;
+    odsdr:ataca odsdr:Laringe ;
+    odsdr:possuiCausa odsdr:InfeccaoViral ;
+    odsdr:doencaRecebeTratamento odsdr:AntiInflamatorio .

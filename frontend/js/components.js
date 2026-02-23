@@ -5,32 +5,65 @@ const Components = (() => {
 
     /* ---- Emoji Map for Symptoms & Entities ---- */
     const EMOJI = {
-        // Sintomas
+        // Sintomas (17)
         'Tosse': '🤧',
         'Febre': '🌡️',
         'FaltaDeAr': '😮‍💨',
         'ChiadoNoPeito': '🫁',
-        // Doenças
+        'SudoreseNoturna': '🌙',
+        'PerdaDePeso': '📉',
+        'Hemoptise': '🩸',
+        'ExpectoracaoCronica': '💧',
+        'DorDeCabeca': '🤕',
+        'DorNoCorpo': '😣',
+        'Calafrios': '🥶',
+        'DorFacial': '😖',
+        'CongestaoNasal': '🤧',
+        'DorToracica': '💔',
+        'Taquicardia': '💓',
+        'Rouquidao': '🗣️',
+        'DorDeGarganta': '😫',
+        // Doenças (10)
         'Pneumonia': '🦠',
         'Asma': '💨',
         'Bronquite': '😷',
         'COVID19': '🧬',
-        // Exames
+        'Tuberculose': '🔴',
+        'DPOC': '🫁',
+        'Gripe': '🤒',
+        'Sinusite': '👃',
+        'EmboliaPulmonar': '🫀',
+        'Laringite': '🗣️',
+        // Exames (9)
         'RaioXTorax': '🩻',
         'PCR': '🧪',
         'Espirometria': '🔬',
-        // Tratamentos
+        'BaciloscopiaBK': '🔬',
+        'TesteRapidoInfluenza': '🧪',
+        'TomografiaDosSeios': '🩻',
+        'AngiotomografiaPulmonar': '🩻',
+        'LaringoscopiaIndireta': '🔍',
+        'Hemograma': '🩸',
+        // Tratamentos (7)
         'Antibiotico': '💊',
         'Broncodilatador': '💉',
         'Hidratacao': '💧',
+        'Rifampicina': '💊',
+        'Oseltamivir': '💊',
+        'Anticoagulante': '💉',
+        'AntiInflamatorio': '💊',
         'Medicamento': '💊',
-        // Fatores de Risco
+        // Fatores de Risco (5)
         'Tabagismo': '🚬',
         'IdadeAvancada': '👴',
         'ComorbidadePulmonar': '⚠️',
-        // Anatomia
+        'Imunossupressao': '🛡️',
+        'PoluicaoDoAr': '🏭',
+        // Anatomia (4)
         'Pulmoes': '🫁',
         'Bronquios': '🫁',
+        'SeiosParanasais': '👃',
+        'Laringe': '🗣️',
         // Profissionais
         'MedicaAna': '👩‍⚕️',
         'MedicoBruno': '👨‍⚕️',

@@ -389,6 +389,138 @@ def export_graph(
 
 
 # ------------------------------------------------------------------
+# Inference endpoint — symptom-based diagnosis ranking
+# ------------------------------------------------------------------
+
+@app.get("/infer")
+def infer_diagnosis(
+    sintomas: str,
+    fumante: bool = False,
+    idade: int = 0,
+):
+    """Infer most probable diseases from a comma-separated list of symptoms.
+
+    Uses SPARQL to query the ontology for disease-symptom relationships
+    via the ``provoca`` property and computes a probability score.
+    Adjusts scores based on risk factors (smoking, age).
+    """
+    symptom_list = [s.strip() for s in sintomas.split(",") if s.strip()]
+    if not symptom_list:
+        raise HTTPException(status_code=400, detail="Informe ao menos um sintoma.")
+
+    graph = load_graph(include_ingest=False)
+
+    # Helper to extract local name (e.g. "Tosse") from a URIRef
+    def _local(uri):
+        s = str(uri)
+        if s.startswith(BASE_IRI):
+            return s[len(BASE_IRI):]
+        if "/" in s:
+            return s.rsplit("/", 1)[-1]
+        return s
+
+    # 1. Build mapping: disease → set of symptoms it provokes
+    query_provoca = """
+    PREFIX odsdr: <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/>
+    SELECT ?doenca ?sintoma WHERE {
+        ?doenca a odsdr:Doenca .
+        ?doenca odsdr:provoca ?sintoma .
+        ?sintoma a odsdr:Sintoma .
+    }
+    """
+    disease_symptoms: dict[str, set[str]] = {}
+    for row in graph.query(query_provoca):
+        d = _local(row[0])
+        s = _local(row[1])
+        disease_symptoms.setdefault(d, set()).add(s)
+
+    # 2. Build mapping: disease → exam, treatment, risk factors
+    query_meta = """
+    PREFIX odsdr: <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/>
+    SELECT ?doenca ?exame ?tratamento WHERE {
+        ?doenca a odsdr:Doenca .
+        ?doenca odsdr:detectadaPor ?exame .
+        ?doenca odsdr:doencaRecebeTratamento ?tratamento .
+    }
+    """
+    disease_exams: dict[str, list[str]] = {}
+    disease_treatments: dict[str, list[str]] = {}
+    for row in graph.query(query_meta):
+        d = _local(row[0])
+        e = _local(row[1])
+        t = _local(row[2])
+        disease_exams.setdefault(d, [])
+        if e not in disease_exams[d]:
+            disease_exams[d].append(e)
+        disease_treatments.setdefault(d, [])
+        if t not in disease_treatments[d]:
+            disease_treatments[d].append(t)
+
+    # Risk factors per disease
+    query_risk = """
+    PREFIX odsdr: <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/>
+    SELECT ?doenca ?fator WHERE {
+        ?doenca a odsdr:Doenca .
+        ?doenca odsdr:facilitadaPor ?fator .
+    }
+    """
+    disease_risks: dict[str, set[str]] = {}
+    for row in graph.query(query_risk):
+        d = _local(row[0])
+        f = _local(row[1])
+        disease_risks.setdefault(d, set()).add(f)
+
+    # 3. Compute scores
+    input_set = set(symptom_list)
+    results = []
+
+    for disease, syms in disease_symptoms.items():
+        matched = input_set & syms
+        if not matched:
+            continue
+
+        # Base score: proportion of disease symptoms matched
+        base_score = len(matched) / len(syms) if syms else 0
+
+        # Bonus: how many of input symptoms this disease explains
+        coverage = len(matched) / len(input_set) if input_set else 0
+
+        # Combined score (weighted)
+        score = 0.6 * base_score + 0.4 * coverage
+
+        # Risk factor adjustments
+        risks = disease_risks.get(disease, set())
+        if fumante and "Tabagismo" in risks:
+            score = min(score * 1.12, 1.0)
+        if idade >= 60 and "IdadeAvancada" in risks:
+            score = min(score * 1.08, 1.0)
+        if "Imunossupressao" in risks and idade >= 65:
+            score = min(score * 1.05, 1.0)
+
+        prob = round(score * 100)
+        if prob < 5:
+            continue
+
+        results.append({
+            "doenca": disease,
+            "probabilidade": prob,
+            "sintomas_coincidentes": sorted(matched),
+            "exame_sugerido": disease_exams.get(disease, []),
+            "tratamento_sugerido": disease_treatments.get(disease, []),
+            "fatores_risco": sorted(risks) if risks else [],
+        })
+
+    # Sort by probability descending
+    results.sort(key=lambda x: x["probabilidade"], reverse=True)
+
+    return {
+        "sintomas_informados": sorted(input_set),
+        "total_sintomas": len(input_set),
+        "diagnosticos": results,
+    }
+
+
+# ------------------------------------------------------------------
 # /api/* routes — mirror every endpoint under the /api prefix
 # ------------------------------------------------------------------
 
@@ -400,6 +532,7 @@ api_router.add_api_route("/entities/{class_name}", list_entities, methods=["GET"
 api_router.add_api_route("/patients", list_patients, methods=["GET"])
 api_router.add_api_route("/ontology/summary", ontology_summary, methods=["GET"])
 api_router.add_api_route("/export", export_graph, methods=["GET"])
+api_router.add_api_route("/infer", infer_diagnosis, methods=["GET"])
 
 app.include_router(api_router)
 

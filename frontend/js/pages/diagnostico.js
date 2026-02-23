@@ -1,20 +1,41 @@
 /* ============================================================
-   Diagnóstico Page — Drag & drop symptoms + Autocomplete + AI
+   Diagnóstico Page — Symptoms → Inference → Results
    ============================================================ */
 const DiagnosticoPage = (() => {
 
   let allSintomas = [];
-  let allDoencas = [];
-  let allExames = [];
-  let allTratamentos = [];
-  let allProfissionais = [];
-  let selectedSintomas = [];
+  let selectedSintomas = JSON.parse(sessionStorage.getItem('odsdr-selectedSintomas') || '[]');
+
+  function saveState() {
+    sessionStorage.setItem('odsdr-selectedSintomas', JSON.stringify(selectedSintomas));
+    const fields = ['dPatientId', 'dIdade', 'dSexo'];
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) sessionStorage.setItem('odsdr-' + id, el.value);
+    });
+    const fum = document.getElementById('dFumante');
+    if (fum) sessionStorage.setItem('odsdr-dFumante', fum.checked);
+  }
+
+  function restoreState() {
+    ['dPatientId', 'dIdade', 'dSexo'].forEach(id => {
+      const el = document.getElementById(id);
+      const val = sessionStorage.getItem('odsdr-' + id);
+      if (el && val) el.value = val;
+    });
+    const fum = document.getElementById('dFumante');
+    const fumLbl = document.getElementById('dFumanteLabel');
+    if (fum) {
+      fum.checked = sessionStorage.getItem('odsdr-dFumante') === 'true';
+      if (fumLbl) fumLbl.textContent = fum.checked ? 'Sim' : 'Não';
+    }
+  }
 
   async function render(container) {
     container.innerHTML = `
       <div class="page-enter">
         <h1 class="page-title">Diagnóstico Semântico</h1>
-        <p class="page-sub">Arraste sintomas, cadastre o paciente e obtenha sugestão diagnóstica por IA</p>
+        <p class="page-sub">Selecione os sintomas do paciente — o sistema infere doença, exame e tratamento pela ontologia</p>
 
         <!-- Patient Quick Registration -->
         <div class="quick-form" style="margin-bottom:24px">
@@ -65,83 +86,48 @@ const DiagnosticoPage = (() => {
           </div>
         </div>
 
-        <!-- Condition Autocomplete -->
-        <div class="diag-layout" style="margin-bottom:24px">
-          <div class="form-group">
-            <label class="form-label">🔍 Condição / Doença</label>
-            <div class="autocomplete-wrapper">
-              <input type="text" class="form-input" id="dDoenca" placeholder="Digite para buscar..." autocomplete="off">
-              <div class="autocomplete-list" id="doencaList"></div>
-            </div>
-            <p class="form-hint">Autocomplete com doenças da ontologia</p>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Exame</label>
-            <div class="autocomplete-wrapper">
-              <input type="text" class="form-input" id="dExame" placeholder="Digite para buscar..." autocomplete="off">
-              <div class="autocomplete-list" id="exameList"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="diag-layout" style="margin-bottom:24px">
-          <div class="form-group">
-            <label class="form-label">Tratamento</label>
-            <div class="autocomplete-wrapper">
-              <input type="text" class="form-input" id="dTratamento" placeholder="Digite para buscar..." autocomplete="off">
-              <div class="autocomplete-list" id="tratamentoList"></div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Profissional</label>
-            <div class="autocomplete-wrapper">
-              <input type="text" class="form-input" id="dProfissional" placeholder="Opcional" autocomplete="off">
-              <div class="autocomplete-list" id="profissionalList"></div>
-            </div>
-          </div>
-        </div>
-
         <!-- Action Buttons -->
         <div style="display:flex;gap:12px;margin-bottom:28px;flex-wrap:wrap">
-          <button class="btn btn-primary" id="btnIngest">💾 Registrar Caso</button>
-          <button class="btn btn-success" id="btnAI">✨ Gerar Análise IA</button>
+          <button class="btn btn-primary" id="btnInfer">🔍 Inferir Diagnóstico</button>
+          <button class="btn btn-success" id="btnIngest" style="display:none">💾 Registrar Caso</button>
           <button class="btn btn-secondary" id="btnClear">🗑 Limpar</button>
         </div>
 
+        <!-- Inference Results -->
+        <div id="inferResults" style="display:none">
+          <div class="section-title">📊 Diagnósticos Inferidos <span class="badge" id="inferCount">0</span></div>
+          <div class="infer-grid" id="inferCards"></div>
+        </div>
+
         <!-- AI Generated Text -->
-        <div class="ai-box" id="aiBox">
+        <div class="ai-box" id="aiBox" style="margin-top:24px">
           <div class="ai-box-header">
             <span class="ai-badge">✨ IA</span>
             <span class="ai-title">Análise Semântica</span>
           </div>
           <div class="ai-content" id="aiContent">
-            Preencha os sintomas e clique em "Gerar Análise IA" para receber um texto diagnóstico gerado a partir da ontologia.
+            Selecione sintomas e clique em "Inferir Diagnóstico" para receber sugestões baseadas na ontologia.
           </div>
         </div>
       </div>`;
 
     await loadEntities();
     bindEvents();
+    restoreState();
+    if (selectedSintomas.length) {
+      renderPool(document.getElementById('sintomaSearch').value);
+      renderSelected();
+    }
   }
 
   async function loadEntities() {
     try {
-      const [sRes, dRes, eRes, tRes, pRes] = await Promise.all([
-        API.entities('sintomas'),
-        API.entities('doencas'),
-        API.entities('exames'),
-        API.entities('tratamentos'),
-        API.entities('profissionais'),
-      ]);
+      const sRes = await API.entities('sintomas');
       allSintomas = sRes.items.map(Components.shortName);
-      allDoencas = dRes.items.map(Components.shortName);
-      allExames = eRes.items.map(Components.shortName);
-      allTratamentos = tRes.items.map(Components.shortName);
-      allProfissionais = pRes.items.map(Components.shortName);
       renderPool();
     } catch (e) {
       document.getElementById('poolItems').innerHTML =
-        '<span style="color:var(--danger);font-size:.82rem">Erro ao carregar entidades da API</span>';
+        '<span style="color:var(--danger);font-size:.82rem">Erro ao carregar sintomas da API</span>';
     }
   }
 
@@ -163,7 +149,6 @@ const DiagnosticoPage = (() => {
       </div>
     `).join('');
 
-    // Bind drag events
     pool.querySelectorAll('.dnd-chip').forEach(chip => {
       chip.addEventListener('dragstart', onDragStart);
       chip.addEventListener('click', () => selectSintoma(chip.dataset.sintoma));
@@ -193,6 +178,7 @@ const DiagnosticoPage = (() => {
   function selectSintoma(name) {
     if (!selectedSintomas.includes(name)) {
       selectedSintomas.push(name);
+      saveState();
       renderPool(document.getElementById('sintomaSearch').value);
       renderSelected();
     }
@@ -200,6 +186,7 @@ const DiagnosticoPage = (() => {
 
   function deselectSintoma(name) {
     selectedSintomas = selectedSintomas.filter(s => s !== name);
+    saveState();
     renderPool(document.getElementById('sintomaSearch').value);
     renderSelected();
   }
@@ -219,58 +206,19 @@ const DiagnosticoPage = (() => {
     setTimeout(() => e.target.classList.remove('dragging'), 200);
   }
 
-  /* ---- Autocomplete ---- */
-  function setupAutocomplete(inputId, listId, items, onSelect) {
-    const input = document.getElementById(inputId);
-    const list = document.getElementById(listId);
-    let highlightIdx = -1;
-
-    input.addEventListener('input', () => {
-      const val = input.value.toLowerCase().trim();
-      if (!val) { list.classList.remove('open'); return; }
-      const matches = items.filter(i => i.toLowerCase().includes(val));
-      if (!matches.length) { list.classList.remove('open'); return; }
-      highlightIdx = -1;
-      list.innerHTML = matches.map((m, i) =>
-        `<div class="autocomplete-item" data-value="${m}"><span class="autocomplete-emoji">${Components.emoji(m)}</span>${Components.formatLocalName(m)}</div>`
-      ).join('');
-      list.classList.add('open');
-      list.querySelectorAll('.autocomplete-item').forEach(item => {
-        item.addEventListener('click', () => {
-          input.value = Components.formatLocalName(item.dataset.value);
-          input.dataset.rawValue = item.dataset.value;
-          list.classList.remove('open');
-          if (onSelect) onSelect(item.dataset.value);
-        });
-      });
-    });
-
-    input.addEventListener('keydown', (e) => {
-      const items = list.querySelectorAll('.autocomplete-item');
-      if (!items.length) return;
-      if (e.key === 'ArrowDown') { e.preventDefault(); highlightIdx = Math.min(highlightIdx + 1, items.length - 1); updateHighlight(items); }
-      if (e.key === 'ArrowUp') { e.preventDefault(); highlightIdx = Math.max(highlightIdx - 1, 0); updateHighlight(items); }
-      if (e.key === 'Enter' && highlightIdx >= 0) { e.preventDefault(); items[highlightIdx].click(); }
-      if (e.key === 'Escape') list.classList.remove('open');
-    });
-
-    function updateHighlight(items) {
-      items.forEach((it, i) => it.classList.toggle('highlighted', i === highlightIdx));
-    }
-
-    document.addEventListener('click', (e) => {
-      if (!input.contains(e.target) && !list.contains(e.target)) list.classList.remove('open');
-    });
-  }
-
   /* ---- Events ---- */
   function bindEvents() {
-    // Fumante toggle
     const fumChk = document.getElementById('dFumante');
     const fumLbl = document.getElementById('dFumanteLabel');
-    fumChk.addEventListener('change', () => { fumLbl.textContent = fumChk.checked ? 'Sim' : 'Não'; });
+    fumChk.addEventListener('change', () => { fumLbl.textContent = fumChk.checked ? 'Sim' : 'Não'; saveState(); });
 
-    // Symptom search filter
+    ['dPatientId', 'dIdade'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', () => setTimeout(saveState, 100));
+    });
+    document.getElementById('dSexo').addEventListener('change', () => saveState());
+
+    // Symptom search
     document.getElementById('sintomaSearch').addEventListener('input', (e) => renderPool(e.target.value));
 
     // Drop zone
@@ -280,59 +228,231 @@ const DiagnosticoPage = (() => {
     target.addEventListener('drop', (e) => {
       e.preventDefault();
       target.classList.remove('drag-over');
-      const name = e.dataTransfer.getData('text/plain');
-      selectSintoma(name);
+      selectSintoma(e.dataTransfer.getData('text/plain'));
     });
 
-    // Pool as drop target (to remove from selected)
     const pool = document.getElementById('sintomasPool');
     pool.addEventListener('dragover', (e) => e.preventDefault());
     pool.addEventListener('drop', (e) => {
       e.preventDefault();
-      const name = e.dataTransfer.getData('text/plain');
-      const src = e.dataTransfer.getData('source');
-      if (src === 'selected') deselectSintoma(name);
+      if (e.dataTransfer.getData('source') === 'selected')
+        deselectSintoma(e.dataTransfer.getData('text/plain'));
     });
 
-    // Autocompletes
-    setupAutocomplete('dDoenca', 'doencaList', allDoencas);
-    setupAutocomplete('dExame', 'exameList', allExames);
-    setupAutocomplete('dTratamento', 'tratamentoList', allTratamentos);
-    setupAutocomplete('dProfissional', 'profissionalList', allProfissionais);
-
     // Buttons
+    document.getElementById('btnInfer').addEventListener('click', doInfer);
     document.getElementById('btnIngest').addEventListener('click', doIngest);
-    document.getElementById('btnAI').addEventListener('click', doAI);
     document.getElementById('btnClear').addEventListener('click', doClear);
   }
 
-  /* ---- Ingest Case ---- */
+  /* ---- Inference ---- */
+  let lastInferResult = null;
+
+  async function doInfer() {
+    if (!selectedSintomas.length) {
+      Components.toast('Selecione ao menos um sintoma', 'error');
+      return;
+    }
+
+    const fumante = document.getElementById('dFumante').checked;
+    const idade = parseInt(document.getElementById('dIdade').value, 10) || 0;
+
+    // Loading
+    const aiContent = document.getElementById('aiContent');
+    aiContent.className = 'ai-content loading';
+    aiContent.innerHTML = 'Consultando ontologia <span class="ai-pulse"></span>';
+
+    const resultsDiv = document.getElementById('inferResults');
+    const cardsDiv = document.getElementById('inferCards');
+    cardsDiv.innerHTML = Components.skeleton(3);
+    resultsDiv.style.display = 'block';
+
+    try {
+      const data = await API.infer(selectedSintomas.join(','), fumante, idade);
+      lastInferResult = data;
+
+      if (!data.diagnosticos.length) {
+        cardsDiv.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">Nenhuma doença correspondente encontrada. Tente selecionar mais sintomas.</div></div>';
+        aiContent.className = 'ai-content';
+        aiContent.textContent = 'Nenhum diagnóstico encontrado para os sintomas selecionados.';
+        return;
+      }
+
+      // Render inference result cards
+      cardsDiv.innerHTML = data.diagnosticos.map((d, i) => {
+        const isTop = i === 0;
+        const barColor = d.probabilidade >= 70 ? 'var(--success)' :
+          d.probabilidade >= 40 ? 'var(--warning)' : 'var(--info)';
+        return `
+          <div class="infer-card ${isTop ? 'infer-card-top' : ''}" style="animation-delay:${i * .06}s" data-idx="${i}">
+            <div class="infer-header">
+              <div class="infer-disease">
+                <span class="infer-emoji">${Components.emoji(d.doenca)}</span>
+                <span class="infer-name">${Components.formatLocalName(d.doenca)}</span>
+                ${isTop ? '<span class="infer-badge-top">Mais Provável</span>' : ''}
+              </div>
+              <div class="infer-prob">${d.probabilidade}%</div>
+            </div>
+            <div class="infer-bar-track">
+              <div class="infer-bar-fill" style="width:${d.probabilidade}%;background:${barColor}"></div>
+            </div>
+            <div class="infer-details">
+              <div class="infer-detail-row">
+                <span class="infer-detail-label">🩺 Sintomas coincidentes</span>
+                <span class="infer-detail-value">${d.sintomas_coincidentes.map(s => `<span class="tag tag-info">${Components.emojiLabel(s)}</span>`).join(' ')}</span>
+              </div>
+              <div class="infer-detail-row">
+                <span class="infer-detail-label">🔬 Exame sugerido</span>
+                <span class="infer-detail-value">${d.exame_sugerido.map(e => `<span class="tag tag-primary">${Components.emojiLabel(e)}</span>`).join(' ') || '—'}</span>
+              </div>
+              <div class="infer-detail-row">
+                <span class="infer-detail-label">💊 Tratamento</span>
+                <span class="infer-detail-value">${d.tratamento_sugerido.map(t => `<span class="tag tag-success">${Components.emojiLabel(t)}</span>`).join(' ') || '—'}</span>
+              </div>
+              ${d.fatores_risco.length ? `
+              <div class="infer-detail-row">
+                <span class="infer-detail-label">⚠️ Fatores de risco</span>
+                <span class="infer-detail-value">${d.fatores_risco.map(f => `<span class="tag tag-warning">${Components.emojiLabel(f)}</span>`).join(' ')}</span>
+              </div>` : ''}
+            </div>
+            ${isTop ? `<button class="btn btn-sm btn-primary infer-select-btn" data-idx="${i}">✅ Selecionar este diagnóstico</button>` : ''}
+          </div>`;
+      }).join('');
+
+      // Show register button for top result
+      document.getElementById('btnIngest').style.display = 'inline-flex';
+
+      // Animate bars
+      requestAnimationFrame(() => {
+        cardsDiv.querySelectorAll('.infer-bar-fill').forEach(bar => {
+          const w = bar.style.width;
+          bar.style.width = '0%';
+          requestAnimationFrame(() => { bar.style.width = w; });
+        });
+      });
+
+      // Selection buttons
+      cardsDiv.querySelectorAll('.infer-select-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = parseInt(btn.dataset.idx);
+          selectDiagnosis(data.diagnosticos[idx]);
+        });
+      });
+
+      // Update count
+      document.getElementById('inferCount').textContent = `${data.diagnosticos.length} resultado${data.diagnosticos.length > 1 ? 's' : ''}`;
+
+      // Generate AI analysis from top result
+      generateAIText(data);
+      Components.toast(`${data.diagnosticos.length} diagnóstico(s) inferido(s)`, 'success');
+
+    } catch (e) {
+      cardsDiv.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Erro ao inferir: ${e.message}</div></div>`;
+      aiContent.className = 'ai-content';
+      aiContent.textContent = 'Erro ao conectar com a API de inferência.';
+    }
+  }
+
+  function selectDiagnosis(d) {
+    Components.toast(`Diagnóstico selecionado: ${Components.formatLocalName(d.doenca)}`, 'info');
+    // Highlight the selected card
+    document.querySelectorAll('.infer-card').forEach(c => c.classList.remove('infer-card-selected'));
+    document.querySelector(`.infer-card[data-idx="${lastInferResult.diagnosticos.indexOf(d)}"]`)?.classList.add('infer-card-selected');
+  }
+
+  /* ---- AI Analysis ---- */
+  function generateAIText(data) {
+    const aiContent = document.getElementById('aiContent');
+    const patientId = document.getElementById('dPatientId').value.trim() || 'Paciente';
+    const idade = document.getElementById('dIdade').value || '?';
+    const sexo = document.getElementById('dSexo').value;
+    const fumante = document.getElementById('dFumante').checked;
+    const sexoText = sexo === 'M' ? 'masculino' : sexo === 'F' ? 'feminino' : 'não informado';
+    const fumanteText = fumante ? 'Sim (fator de risco: Tabagismo)' : 'Não';
+    const sintomasText = selectedSintomas.map(Components.formatLocalName).join(', ');
+
+    const top = data.diagnosticos[0];
+    const others = data.diagnosticos.slice(1, 4);
+
+    let differentialText = '';
+    if (others.length) {
+      differentialText = '\n\n🔄 DIAGNÓSTICO DIFERENCIAL:\n' +
+        others.map(d => `  • ${Components.formatLocalName(d.doenca)}: ${d.probabilidade}% — ${d.sintomas_coincidentes.length} sintoma(s) coincidente(s)`).join('\n');
+    }
+
+    let riskText = '';
+    if (top.fatores_risco.length) {
+      riskText = '\n\n⚠️ FATORES DE RISCO IDENTIFICADOS:\n' +
+        top.fatores_risco.map(f => `  • ${Components.formatLocalName(f)}`).join('\n');
+    }
+
+    const analysis = `📋 RELATÓRIO DE INFERÊNCIA SEMÂNTICA — ODSDR v2.0.0
+
+👤 DADOS DO PACIENTE:
+  • ID: ${patientId}
+  • Idade: ${idade} anos | Sexo: ${sexoText}
+  • Fumante: ${fumanteText}
+
+🩺 SINTOMAS APRESENTADOS (${selectedSintomas.length}):
+  • ${sintomasText}
+
+🎯 DIAGNÓSTICO MAIS PROVÁVEL:
+  • ${Components.formatLocalName(top.doenca)} — ${top.probabilidade}% de compatibilidade
+  • Sintomas coincidentes: ${top.sintomas_coincidentes.map(Components.formatLocalName).join(', ')}
+
+🔬 EXAME SUGERIDO:
+  • ${top.exame_sugerido.map(Components.formatLocalName).join(', ') || 'Nenhum definido'}
+
+💊 TRATAMENTO SUGERIDO:
+  • ${top.tratamento_sugerido.map(Components.formatLocalName).join(', ') || 'Nenhum definido'}
+${differentialText}${riskText}
+
+📊 CONCLUSÃO:
+Com base nos ${selectedSintomas.length} sintoma(s) e na ontologia ODSDR v2.0.0 (10 doenças, 17 sintomas), a condição ${Components.formatLocalName(top.doenca)} apresenta a maior compatibilidade (${top.probabilidade}%). ${others.length ? `Foram identificados ${others.length} diagnóstico(s) diferencial(is).` : ''} O raciocínio semântico utilizou a propriedade "provoca" e fatores de risco para correlacionar entidades clínicas.
+
+⏱ Análise gerada em ${new Date().toLocaleString('pt-BR')}`;
+
+    // Typewriter effect
+    aiContent.className = 'ai-content';
+    aiContent.textContent = '';
+    let idx = 0;
+    function typeChar() {
+      if (idx < analysis.length) {
+        aiContent.textContent += analysis[idx];
+        idx++;
+        setTimeout(typeChar, idx < 20 ? 15 : 3);
+      }
+    }
+    typeChar();
+  }
+
+  /* ---- Ingest (register case from inference) ---- */
   async function doIngest() {
+    if (!lastInferResult || !lastInferResult.diagnosticos.length) {
+      Components.toast('Execute a inferência primeiro', 'error');
+      return;
+    }
+
     const patientId = document.getElementById('dPatientId').value.trim();
     const idade = parseInt(document.getElementById('dIdade').value, 10);
     const sexo = document.getElementById('dSexo').value;
     const fumante = document.getElementById('dFumante').checked;
-    const doenca = document.getElementById('dDoenca').dataset.rawValue || document.getElementById('dDoenca').value.trim();
-    const exame = document.getElementById('dExame').dataset.rawValue || document.getElementById('dExame').value.trim();
-    const tratamento = document.getElementById('dTratamento').dataset.rawValue || document.getElementById('dTratamento').value.trim();
-    const profissional = document.getElementById('dProfissional').dataset.rawValue || document.getElementById('dProfissional').value.trim() || null;
 
-    // Validation
     if (!patientId) return Components.toast('Informe o ID do paciente', 'error');
     if (isNaN(idade) || idade < 0 || idade > 130) return Components.toast('Idade inválida (0–130)', 'error');
     if (!sexo) return Components.toast('Selecione o sexo', 'error');
-    if (!selectedSintomas.length) return Components.toast('Selecione ao menos um sintoma', 'error');
-    if (!doenca) return Components.toast('Informe a doença', 'error');
-    if (!exame) return Components.toast('Informe o exame', 'error');
-    if (!tratamento) return Components.toast('Informe o tratamento', 'error');
+
+    const top = lastInferResult.diagnosticos[0];
 
     const payload = {
       patient_id: patientId,
       diagnostico_id: patientId,
       idade, sexo, fumante,
       sintomas: selectedSintomas,
-      exame, doenca, tratamento,
-      profissional,
+      exame: top.exame_sugerido[0] || 'Hemograma',
+      doenca: top.doenca,
+      tratamento: top.tratamento_sugerido[0] || 'Hidratacao',
+      profissional: null,
       data_diagnostico: new Date().toISOString().split('T')[0],
     };
 
@@ -344,110 +464,6 @@ const DiagnosticoPage = (() => {
     }
   }
 
-  /* ---- AI Analysis (simulated from ontology) ---- */
-  async function doAI() {
-    const aiContent = document.getElementById('aiContent');
-    const patientId = document.getElementById('dPatientId').value.trim() || 'Paciente';
-    const idade = document.getElementById('dIdade').value || '?';
-    const sexo = document.getElementById('dSexo').value || '?';
-    const fumante = document.getElementById('dFumante').checked;
-    const doenca = document.getElementById('dDoenca').dataset.rawValue || document.getElementById('dDoenca').value.trim();
-    const exame = document.getElementById('dExame').dataset.rawValue || document.getElementById('dExame').value.trim();
-    const tratamento = document.getElementById('dTratamento').dataset.rawValue || document.getElementById('dTratamento').value.trim();
-
-    if (!selectedSintomas.length) {
-      Components.toast('Selecione ao menos um sintoma para a análise', 'error');
-      return;
-    }
-
-    // Loading state
-    aiContent.className = 'ai-content loading';
-    aiContent.innerHTML = 'Gerando análise semântica <span class="ai-pulse"></span>';
-
-    // Simulate typing delay
-    await new Promise(r => setTimeout(r, 1200));
-
-    // Build analysis from ontology data
-    const sintomasText = selectedSintomas.map(Components.formatLocalName).join(', ');
-    const sexoText = sexo === 'M' ? 'masculino' : sexo === 'F' ? 'feminino' : 'não informado';
-    const fumanteText = fumante ? 'Sim (fator de risco: Tabagismo)' : 'Não';
-
-    // Try to find related diseases based on symptoms via queries
-    let relatedInfo = '';
-    try {
-      const queryRes = await API.runQuery('09_sintomas_por_doenca', 'json');
-      if (queryRes && queryRes.rows) {
-        const matched = {};
-        queryRes.rows.forEach(row => {
-          const doencaName = Components.shortName(row[0]);
-          const sintomaName = Components.shortName(row[1]);
-          if (selectedSintomas.some(s => s.toLowerCase() === sintomaName.toLowerCase())) {
-            if (!matched[doencaName]) matched[doencaName] = [];
-            matched[doencaName].push(sintomaName);
-          }
-        });
-        if (Object.keys(matched).length) {
-          relatedInfo = '\n\n🔗 CORRELAÇÕES ONTOLÓGICAS:\n';
-          for (const [d, syms] of Object.entries(matched)) {
-            const pct = Math.round((syms.length / selectedSintomas.length) * 100);
-            relatedInfo += `  • ${Components.formatLocalName(d)}: ${syms.length}/${selectedSintomas.length} sintomas compatíveis (${pct}%)\n`;
-          }
-        }
-      }
-    } catch (_) { }
-
-    // Try to get treatment info
-    let treatmentInfo = '';
-    try {
-      const tRes = await API.runQuery('10_tratamentos_por_doenca', 'json');
-      if (tRes && tRes.rows && doenca) {
-        const matchedT = tRes.rows.filter(r => Components.shortName(r[0]).toLowerCase() === doenca.toLowerCase());
-        if (matchedT.length) {
-          treatmentInfo = `\n\n💊 TRATAMENTO SUGERIDO PELA ONTOLOGIA:\n  • ${matchedT.map(r => Components.formatLocalName(Components.shortName(r[1]))).join(', ')}`;
-        }
-      }
-    } catch (_) { }
-
-    // Risk factors
-    let riskInfo = '';
-    if (fumante) {
-      riskInfo = '\n\n⚠️ FATORES DE RISCO IDENTIFICADOS:\n  • Tabagismo detectado — aumenta risco para Pneumonia e Bronquite conforme ontologia ODSDR';
-    }
-
-    const analysis = `📋 RELATÓRIO DE ANÁLISE SEMÂNTICA — ODSDR v1.2.0
-
-👤 DADOS DO PACIENTE:
-  • ID: ${patientId}
-  • Idade: ${idade} anos | Sexo: ${sexoText}
-  • Fumante: ${fumanteText}
-
-🩺 SINTOMAS APRESENTADOS:
-  • ${sintomasText}
-
-${doenca ? `🦠 CONDIÇÃO INFORMADA:\n  • ${Components.formatLocalName(doenca)}` : ''}
-${exame ? `\n🔬 EXAME REALIZADO:\n  • ${Components.formatLocalName(exame)}` : ''}
-${tratamento ? `\n💉 TRATAMENTO INDICADO:\n  • ${Components.formatLocalName(tratamento)}` : ''}
-${relatedInfo}${treatmentInfo}${riskInfo}
-
-📊 CONCLUSÃO:
-Com base nos ${selectedSintomas.length} sintoma(s) apresentado(s) e nos dados da ontologia ODSDR, ${doenca ? `a condição ${Components.formatLocalName(doenca)} é compatível com o perfil clínico descrito.` : 'recomenda-se análise clínica detalhada para determinação diagnóstica.'} O raciocínio semântico utilizou classes de inferência OWL para correlacionar entidades clínicas do domínio respiratório.
-
-⏱ Análise gerada em ${new Date().toLocaleString('pt-BR')}`;
-
-    // Type-writer effect
-    aiContent.className = 'ai-content';
-    aiContent.textContent = '';
-    let idx = 0;
-    function typeChar() {
-      if (idx < analysis.length) {
-        aiContent.textContent += analysis[idx];
-        idx++;
-        setTimeout(typeChar, idx < 20 ? 15 : 5);
-      }
-    }
-    typeChar();
-  }
-
   /* ---- Clear ---- */
   function doClear() {
     document.getElementById('dPatientId').value = '';
@@ -455,20 +471,16 @@ Com base nos ${selectedSintomas.length} sintoma(s) apresentado(s) e nos dados da
     document.getElementById('dSexo').value = '';
     document.getElementById('dFumante').checked = false;
     document.getElementById('dFumanteLabel').textContent = 'Não';
-    document.getElementById('dDoenca').value = '';
-    document.getElementById('dDoenca').dataset.rawValue = '';
-    document.getElementById('dExame').value = '';
-    document.getElementById('dExame').dataset.rawValue = '';
-    document.getElementById('dTratamento').value = '';
-    document.getElementById('dTratamento').dataset.rawValue = '';
-    document.getElementById('dProfissional').value = '';
-    document.getElementById('dProfissional').dataset.rawValue = '';
     selectedSintomas = [];
+    lastInferResult = null;
+    saveState();
     renderPool('');
     renderSelected();
+    document.getElementById('inferResults').style.display = 'none';
+    document.getElementById('btnIngest').style.display = 'none';
     document.getElementById('aiContent').className = 'ai-content';
     document.getElementById('aiContent').textContent =
-      'Preencha os sintomas e clique em "Gerar Análise IA" para receber um texto diagnóstico gerado a partir da ontologia.';
+      'Selecione sintomas e clique em "Inferir Diagnóstico" para receber sugestões baseadas na ontologia.';
     Components.toast('Formulário limpo', 'info');
   }
 

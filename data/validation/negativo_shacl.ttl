@@ -2,16 +2,12 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
-<http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-validation-negative/1.0> a owl:Ontology ;
+<http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-validation-negative/2.0> a owl:Ontology ;
     owl:imports <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/> .
 
-## --- Caso 1: Paciente sem idade, fumante com tipo errado, exame sem anatomia (caso original expandido) ---
-## Violacoes esperadas:
-##   - PacienteShape: idade ausente (minCount 1)
-##   - PacienteShape: fumante com tipo string ao inves de boolean
-##   - ExameShape: examina ausente (minCount 1)
-##   - DiagnosticoShape: dataDiagnostico com tipo string ao inves de date
-##   - DiagnosticoShape: diagnosticaDoenca ausente (minCount 1)
+## --- Caso 1: Paciente sem idade, fumante tipo errado, exame sem anatomia ---
+## Violacoes: idade ausente, fumante tipo string, examina ausente,
+##            dataDiagnostico tipo string, diagnosticaDoenca ausente
 
 odsdr:PacienteInvalidoShacl a owl:NamedIndividual, odsdr:Paciente ;
     odsdr:sexo "M" ;
@@ -28,22 +24,16 @@ odsdr:DiagnosticoInvalidoShacl a owl:NamedIndividual, odsdr:Diagnostico ;
     odsdr:geraTratamento odsdr:Hidratacao ;
     odsdr:dataDiagnostico "10-02-2026"^^xsd:string .
 
-## --- Caso 2: Paciente sem sintomas e sem exame ---
-## Violacoes esperadas:
-##   - PacienteShape: apresenta ausente (minCount 1)
-##   - PacienteShape: realiza ausente (minCount 1)
-##   - PacienteShape: recebeDiagnostico ausente (minCount 1)
+## --- Caso 2: Paciente sem sintomas, sem exame, sem diagnostico ---
+## Violacoes: apresenta, realiza, recebeDiagnostico todos ausentes
 
 odsdr:PacienteSemSintomas a owl:NamedIndividual, odsdr:Paciente ;
     odsdr:idade 40 ;
     odsdr:sexo "F" ;
     odsdr:fumante true .
 
-## --- Caso 3: Paciente com sexo e idade de tipos errados ---
-## Violacoes esperadas:
-##   - PacienteShape: idade com tipo string ao inves de integer
-##   - PacienteShape: sexo ausente (pois nao declarado)
-##   - PacienteShape: fumante ausente (pois nao declarado)
+## --- Caso 3: Paciente com idade tipo string ---
+## Violacoes: idade tipo errado, sexo ausente, fumante ausente
 
 odsdr:PacienteTiposErrados a owl:NamedIndividual, odsdr:Paciente ;
     odsdr:idade "trinta"^^xsd:string ;
@@ -58,18 +48,12 @@ odsdr:DiagnosticoTiposErrados a owl:NamedIndividual, odsdr:Diagnostico ;
     odsdr:geraTratamento odsdr:Hidratacao .
 
 ## --- Caso 4: Diagnostico totalmente vazio ---
-## Violacoes esperadas:
-##   - DiagnosticoShape: dataDiagnostico ausente (minCount 1)
-##   - DiagnosticoShape: geradoApartirDe ausente (minCount 1)
-##   - DiagnosticoShape: diagnosticaDoenca ausente (minCount 1)
-##   - DiagnosticoShape: geraTratamento ausente (minCount 1)
+## Violacoes: dataDiagnostico, geradoApartirDe, diagnosticaDoenca, geraTratamento
 
 odsdr:DiagnosticoVazio a owl:NamedIndividual, odsdr:Diagnostico .
 
-## --- Caso 5: Paciente com diagnostico sem doenca e sem tratamento ---
-## Violacoes esperadas:
-##   - DiagnosticoShape: diagnosticaDoenca ausente (minCount 1)
-##   - DiagnosticoShape: geraTratamento ausente (minCount 1)
+## --- Caso 5: Paciente com diagnostico incompleto ---
+## Violacoes: diagnosticaDoenca e geraTratamento ausentes
 
 odsdr:PacienteDiagIncompleto a owl:NamedIndividual, odsdr:Paciente ;
     odsdr:idade 50 ;
@@ -82,3 +66,72 @@ odsdr:PacienteDiagIncompleto a owl:NamedIndividual, odsdr:Paciente ;
 odsdr:DiagnosticoIncompleto a owl:NamedIndividual, odsdr:Diagnostico ;
     odsdr:dataDiagnostico "2026-02-22"^^xsd:date ;
     odsdr:geradoApartirDe odsdr:RaioXTorax .
+
+## --- Caso 6 (novo): Paciente com idade negativa ---
+## Violacoes: idade fora do range (xsd:nonNegativeInteger esperado)
+
+odsdr:PacienteIdadeNegativa a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade -5 ;
+    odsdr:sexo "M" ;
+    odsdr:fumante false ;
+    odsdr:apresenta odsdr:Tosse ;
+    odsdr:realiza odsdr:RaioXTorax ;
+    odsdr:recebeDiagnostico odsdr:DiagIdadeNeg .
+
+odsdr:DiagIdadeNeg a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-23"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:RaioXTorax ;
+    odsdr:diagnosticaDoenca odsdr:Pneumonia ;
+    odsdr:geraTratamento odsdr:Antibiotico .
+
+## --- Caso 7 (novo): Diagnostico com data futura invalida e doenca inexistente ---
+## Violacoes: doenca nao existente na ontologia / referencia invalida
+
+odsdr:PacienteDoencaInvalida a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 30 ;
+    odsdr:sexo "F" ;
+    odsdr:fumante false ;
+    odsdr:apresenta odsdr:Febre ;
+    odsdr:realiza odsdr:Hemograma ;
+    odsdr:recebeDiagnostico odsdr:DiagDoencaInvalida .
+
+odsdr:DiagDoencaInvalida a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2030-01-01"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:Hemograma ;
+    odsdr:diagnosticaDoenca odsdr:DoencaInventada ;
+    odsdr:geraTratamento odsdr:Antibiotico .
+
+## --- Caso 8 (novo): Paciente com sexo invalido e multiplos campos ausentes ---
+## Violacoes: sexo com valor numerico, fumante ausente
+
+odsdr:PacienteSexoInvalido a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 25 ;
+    odsdr:sexo 123 ;
+    odsdr:apresenta odsdr:DorDeCabeca, odsdr:CongestaoNasal ;
+    odsdr:realiza odsdr:TomografiaDosSeios ;
+    odsdr:recebeDiagnostico odsdr:DiagSexoInvalido .
+
+odsdr:DiagSexoInvalido a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-23"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:TomografiaDosSeios ;
+    odsdr:diagnosticaDoenca odsdr:Sinusite ;
+    odsdr:geraTratamento odsdr:Antibiotico .
+
+## --- Caso 9 (novo): Diagnostico com tratamento incompativel ---
+## Nota: Pneumonia tratada com Anticoagulante (errado clinicamente)
+## Violacao semantica, nao de shape, utile para validacao clinica
+
+odsdr:PacienteTratIncompat a owl:NamedIndividual, odsdr:Paciente ;
+    odsdr:idade 55 ;
+    odsdr:sexo "M" ;
+    odsdr:fumante true ;
+    odsdr:apresenta odsdr:Tosse, odsdr:Febre ;
+    odsdr:possuiFatorRisco odsdr:Tabagismo ;
+    odsdr:realiza odsdr:RaioXTorax ;
+    odsdr:recebeDiagnostico odsdr:DiagTratIncompat .
+
+odsdr:DiagTratIncompat a owl:NamedIndividual, odsdr:Diagnostico ;
+    odsdr:dataDiagnostico "2026-02-23"^^xsd:date ;
+    odsdr:geradoApartirDe odsdr:RaioXTorax ;
+    odsdr:diagnosticaDoenca odsdr:Pneumonia ;
+    odsdr:geraTratamento odsdr:Anticoagulante .
