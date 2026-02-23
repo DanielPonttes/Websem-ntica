@@ -3,3 +3,4 @@ owlready2>=0.50
 pyshacl>=0.30.1
 fastapi>=0.115.0
 uvicorn>=0.30.0
+aiofiles>=23.0

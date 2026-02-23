@@ -5,11 +5,14 @@ from datetime import date
 from pathlib import Path
 from typing import Literal
 
+from fastapi import APIRouter
 from fastapi import FastAPI
 from fastapi import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from fastapi.responses import JSONResponse
 from fastapi.responses import PlainTextResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from pydantic import Field
 from pydantic import field_validator
@@ -24,12 +27,15 @@ from rdflib.namespace import XSD
 
 
 ROOT = Path(__file__).resolve().parents[1]
+FRONTEND_DIR = ROOT / "frontend"
 ONTOLOGY_PATH = ROOT / "ontology" / "odsdr.ttl"
 BASE_DATA_PATH = ROOT / "data" / "casos_iniciais.ttl"
 INGEST_DATA_PATH = ROOT / "data" / "cases_ingestao.ttl"
 QUERIES_DIR = ROOT / "queries"
 BASE_IRI = "http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/"
 ODSDR = Namespace(BASE_IRI)
+
+api_router = APIRouter(prefix="/api")
 
 
 app = FastAPI(
@@ -380,3 +386,35 @@ def export_graph(
 
     payload = graph.serialize(format="turtle")
     return PlainTextResponse(payload, media_type="text/turtle; charset=utf-8")
+
+
+# ------------------------------------------------------------------
+# /api/* routes — mirror every endpoint under the /api prefix
+# ------------------------------------------------------------------
+
+api_router.add_api_route("/health", health, methods=["GET"])
+api_router.add_api_route("/queries", list_queries, methods=["GET"])
+api_router.add_api_route("/queries/{query_name}", run_query_endpoint, methods=["GET"])
+api_router.add_api_route("/cases", ingest_case, methods=["POST"])
+api_router.add_api_route("/entities/{class_name}", list_entities, methods=["GET"])
+api_router.add_api_route("/patients", list_patients, methods=["GET"])
+api_router.add_api_route("/ontology/summary", ontology_summary, methods=["GET"])
+api_router.add_api_route("/export", export_graph, methods=["GET"])
+
+app.include_router(api_router)
+
+
+# ------------------------------------------------------------------
+# Frontend static files
+# ------------------------------------------------------------------
+
+@app.get("/")
+def serve_index():
+    index = FRONTEND_DIR / "index.html"
+    if index.exists():
+        return FileResponse(index, media_type="text/html")
+    return JSONResponse({"detail": "Frontend not found. Run from project root."}, status_code=404)
+
+
+if FRONTEND_DIR.exists():
+    app.mount("/", StaticFiles(directory=str(FRONTEND_DIR)), name="frontend")
