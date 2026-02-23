@@ -2,7 +2,7 @@
    API Client — ODSDR Semantic API
    ============================================================ */
 const API = (() => {
-    const BASE = '/api';
+    const BASE = 'http://localhost:8000/api';
 
     async function request(path, options = {}) {
         const url = `${BASE}${path}`;

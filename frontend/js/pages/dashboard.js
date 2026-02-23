@@ -8,12 +8,12 @@ const DashboardPage = (() => {
     'Asma': { img: 'assets/diseases/asma.png', color: '#22c55e', desc: 'Inflamação das vias aéreas — GINA 2024' },
     'COVID19': { img: 'assets/diseases/covid19.png', color: '#ef4444', desc: 'SARS-CoV-2 — ICD-11 RA01.0' },
     'Bronquite': { img: 'assets/diseases/bronquite.png', color: '#f59e0b', desc: 'Inflamação dos brônquios — ICD-11 CA20' },
-    'Tuberculose': { img: null, color: '#dc2626', desc: 'Mycobacterium tuberculosis — ICD-11 1B10' },
-    'DPOC': { img: null, color: '#8b5cf6', desc: 'Doença pulmonar obstrutiva — GOLD 2024' },
-    'Gripe': { img: null, color: '#06b6d4', desc: 'Influenza A/B — ICD-11 1E30' },
-    'Sinusite': { img: null, color: '#14b8a6', desc: 'Seios paranasais — ICD-11 CA0A' },
-    'EmboliaPulmonar': { img: null, color: '#e11d48', desc: 'Tromboembolismo pulmonar — ICD-11 BB00' },
-    'Laringite': { img: null, color: '#a855f7', desc: 'Inflamação da laringe — ICD-11 CA04' },
+    'Tuberculose': { img: 'assets/diseases/tuberculose.png', color: '#dc2626', desc: 'Mycobacterium tuberculosis — ICD-11 1B10' },
+    'DPOC': { img: 'assets/diseases/dpoc.png', color: '#8b5cf6', desc: 'Doença pulmonar obstrutiva — GOLD 2024' },
+    'Gripe': { img: 'assets/diseases/gripe.png', color: '#06b6d4', desc: 'Influenza A/B — ICD-11 1E30' },
+    'Sinusite': { img: 'assets/diseases/sinusite.png', color: '#14b8a6', desc: 'Seios paranasais — ICD-11 CA0A' },
+    'EmboliaPulmonar': { img: 'assets/diseases/emboliapulmonar.png', color: '#e11d48', desc: 'Tromboembolismo pulmonar — ICD-11 BB00' },
+    'Laringite': { img: 'assets/diseases/laringite.png', color: '#a855f7', desc: 'Inflamação da laringe — ICD-11 CA04' },
   };
 
   async function render(container) {
@@ -58,7 +58,11 @@ const DashboardPage = (() => {
 
       // Metrics
       const doencas = new Set();
-      patients.patients.forEach(p => p.doencas.forEach(d => doencas.add(d)));
+      const sintomas = new Set();
+      patients.patients.forEach(p => {
+        p.doencas.forEach(d => doencas.add(d));
+        p.sintomas.forEach(s => sintomas.add(s));
+      });
 
       // Count per disease
       const diseaseCounts = {};
@@ -70,6 +74,7 @@ const DashboardPage = (() => {
       document.getElementById('dashMetrics').innerHTML = [
         Components.metricCard('Pacientes', patients.count, '👥', 'purple'),
         Components.metricCard('Doenças', doencas.size, '🦠', 'red'),
+        Components.metricCard('Sintomas', sintomas.size, '🤒', 'orange'),
         Components.metricCard('Classes', summary.classes.count, '🧬', 'blue'),
         Components.metricCard('Propriedades', summary.object_properties.count, '🔗', 'amber'),
       ].join('');
