@@ -1,6 +1,6 @@
 # Relatorio SHACL - Fase 3
 
-Gerado em: 2026-02-23 17:53:07 UTC
+Gerado em: 2026-02-23 18:37:58 UTC
 
 ## Resumo
 - `data/validation/positivo_shacl.ttl`: conforms=True | violations=0
