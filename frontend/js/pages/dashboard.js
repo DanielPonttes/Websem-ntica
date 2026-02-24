@@ -147,7 +147,7 @@ const DashboardPage = (() => {
   }
 
   function ontoBadge(label, count, color) {
-    return `<div class="metric-card" style="padding:14px 18px;gap:4px"><div class="metric-label">${label}</div><div class="metric-value" style="font-size:1.4rem">${count}</div></div>`;
+    return `<a href="#/ontologia" class="metric-card" style="padding:14px 18px;gap:4px;text-decoration:none;cursor:pointer;color:inherit"><div class="metric-label">${label}</div><div class="metric-value" style="font-size:1.4rem;color:var(--text-1)">${count}</div></a>`;
   }
 
   return { render };

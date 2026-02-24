@@ -1,0 +1,24 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX odsdr: <http://www.semanticweb.org/daniel-pontes/ontologies/2025/9/respiratory-diseases-ontology/>
+
+SELECT ?source ?relation ?target WHERE {
+  {
+    ?source rdfs:subClassOf ?target .
+    BIND("subClassOf" AS ?relation)
+    FILTER(ISURI(?source) && STRSTARTS(STR(?source), STR(odsdr:)))
+    FILTER(?source != ?target)
+  } UNION {
+    ?source rdf:type ?target .
+    BIND("type" AS ?relation)
+    FILTER(ISURI(?source) && STRSTARTS(STR(?source), STR(odsdr:)))
+    FILTER(?target IN (odsdr:Doenca, odsdr:Sintoma, odsdr:Exame, odsdr:Tratamento, odsdr:Medicamento, odsdr:Paciente, odsdr:FatorRisco, odsdr:Anatomia, odsdr:ProfissionalSaude))
+  } UNION {
+    ?source ?relation ?target .
+    ?relation a owl:ObjectProperty .
+    FILTER(ISURI(?source) && ISURI(?target))
+    FILTER(STRSTARTS(STR(?source), STR(odsdr:)))
+    FILTER(STRSTARTS(STR(?target), STR(odsdr:)))
+  }
+} LIMIT 800

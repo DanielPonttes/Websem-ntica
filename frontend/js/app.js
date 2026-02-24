@@ -7,6 +7,7 @@
         '/diagnostico': DiagnosticoPage,
         '/pacientes': PacientesPage,
         '/consultas': ConsultasPage,
+        '/ontologia': typeof OntologiaPage !== 'undefined' ? OntologiaPage : DashboardPage,
     };
 
     function getHash() {
